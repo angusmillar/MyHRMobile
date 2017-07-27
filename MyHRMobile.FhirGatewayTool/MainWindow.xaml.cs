@@ -25,21 +25,26 @@ namespace MyHRMobile.FhirGatewayTool
     private GridSplitter Split = null;
     private StackPanel PanelAddUser = null;
     private UiService UiService;
-    private ViewModel.MainViewModel MainViewModel;
+    private ViewModel.Presenter Presenter;
 
     public MainWindow()
     {
+
       InitializeComponent();
-      SetupRightPanel();
       RightPanleStateList = new List<UIElement>();
 
-      MainViewModel = new ViewModel.MainViewModel();
+      Presenter = new ViewModel.Presenter();
       UiService = new UiService();
       UiService.PrimeApplicationStore();
       UiService.LoadApplicationStore();
-      UiService.UpdateView(MainViewModel);
-      ComboBoxAccount.ItemsSource = MainViewModel.UserAccountViewList;
-      ComboBoxAccount.SelectedItem = MainViewModel.UserAccountViewList[0];
+      DataContext = Presenter;
+      UiService.UpdateView(Presenter);
+
+
+
+      SetupRightPanel();
+      //ComboBoxAccount.ItemsSource = MainViewModel.UserAccountViewList;
+      //ComboBoxAccount.SelectedItem = Presenter.UserAccountViewList[0];
     }
 
     private void SetupRightPanel()
@@ -87,23 +92,152 @@ namespace MyHRMobile.FhirGatewayTool
 
     private void MyGovWeb_LoadCompleted(object sender, NavigationEventArgs e)
     {
+
       if (e.Uri.OriginalString.StartsWith("https://localhost/oauth_callback?"))
       {
-        string AuthorisationCode = string.Empty;
-        string[] QuerySplit = e.Uri.Query.Split('=');
-        if (QuerySplit.Count() == 2 && QuerySplit[0] == "?code")
+        if (e.Uri.OriginalString.Contains('?'))
         {
-          UiService.CurrectUserAccount.AuthorisationCode = QuerySplit[1].Trim();
-          if (UiService.GetAccessToken())
+          string[] QuerySplit = e.Uri.Query.Split('?');
+          string ParameterCodeValue = MyHRMobile.Common.Utility.HttpTools.GetQueryParameter(QuerySplit[1], "code");
+          if (!string.IsNullOrWhiteSpace(ParameterCodeValue))
           {
-
-            ComboBoxAccount.ItemsSource = UiService.ApplicationStore.UserList;
-            ComboBoxAccount.SelectedItem = UiService.ApplicationStore.UserList.SingleOrDefault(x => x.Username == UiService.CurrectUserAccount.Username);
-            DropRightPanel();
+            UiService.CurrectUserAccount.AuthorisationCode = ParameterCodeValue.Trim();
+            if (UiService.GetAccessToken())
+            {
+              ComboBoxAccount.ItemsSource = UiService.ApplicationStore.UserList;
+              ComboBoxAccount.SelectedItem = UiService.ApplicationStore.UserList.SingleOrDefault(x => x.Username == UiService.CurrectUserAccount.Username);
+              DropRightPanel();
+            }
           }
+          else
+          {
+            //Cancel
+            //https://localhost/oauth_callback?error=invalid_grant&error_description=Authentication+cancelled+by+user
 
+            string ParameterErrorValue = MyHRMobile.Common.Utility.HttpTools.GetQueryParameter(QuerySplit[1], "error");
+            if (!string.IsNullOrWhiteSpace(ParameterErrorValue))
+            {
+              Presenter.MyGovError = ParameterErrorValue;
+              var ErrorDescription = MyHRMobile.Common.Utility.HttpTools.GetQueryParameter(QuerySplit[1], "error_description");
+              if (!string.IsNullOrWhiteSpace(ErrorDescription))
+              {
+                Presenter.MyGovErrorDescription = ErrorDescription;
+              }
+              ReportMyGovLoginError();
+            }
+          }
         }
       }
+      else if (e.Uri.OriginalString.StartsWith("https://apinams.ehealthvendortest.health.gov.au/api/oauth/ams.ehealthvendortest.health.gov.au/api/oauth/authorize??"))
+      {
+        //Cancel from Secret Question
+        //https://apinams.ehealthvendortest.health.gov.au/api/oauth/ams.ehealthvendortest.health.gov.au/api/oauth/authorize??error=invalid_grant&error_description=Authentication+cancelled+by+user
+        if (e.Uri.OriginalString.Contains('?'))
+        {
+          string[] QuerySplit = e.Uri.Query.Split('?');
+          if (QuerySplit.Count() == 3)
+          {
+            string Query = QuerySplit[2];
+            string ParameterErrorValue = MyHRMobile.Common.Utility.HttpTools.GetQueryParameter(Query, "error");
+            if (!string.IsNullOrWhiteSpace(ParameterErrorValue))
+            {
+              Presenter.MyGovError = ParameterErrorValue;
+              var ErrorDescription = MyHRMobile.Common.Utility.HttpTools.GetQueryParameter(Query, "error_description");
+              if (!string.IsNullOrWhiteSpace(ErrorDescription))
+              {
+                Presenter.MyGovErrorDescription = ErrorDescription;
+              }
+              ReportMyGovLoginError();
+            }
+            else
+            {
+              Presenter.MyGovError = $"Unknown Error";
+              Presenter.MyGovErrorDescription = $"URL was: {e.Uri.OriginalString}";
+              ReportMyGovLoginError();
+            }
+          }
+          else
+          {
+            Presenter.MyGovError = $"Unknown Error";
+            Presenter.MyGovErrorDescription = $"URL was: {e.Uri.OriginalString}";
+            ReportMyGovLoginError();
+          }
+        }
+        else
+        {
+          Presenter.MyGovError = $"Unknown Error";
+          Presenter.MyGovErrorDescription = $"URL was: {e.Uri.OriginalString}";
+          ReportMyGovLoginError();
+        }
+      }
+    }
+
+    private void ReportMyGovLoginError()
+    {
+      Border Border = new Border();
+      Border.BorderThickness = new Thickness(3);
+      Border.BorderBrush = Brushes.Salmon;
+      Border.Margin = new Thickness(10);
+
+      StackPanel VerticalStack = new StackPanel();
+      VerticalStack.Margin = new Thickness(20);
+      VerticalStack.Orientation = Orientation.Vertical;
+      VerticalStack.HorizontalAlignment = HorizontalAlignment.Left;
+      Border.Child = VerticalStack;
+
+      StackPanel HorizontalStackOne = new StackPanel();
+      HorizontalStackOne.Orientation = Orientation.Horizontal;
+      HorizontalStackOne.HorizontalAlignment = HorizontalAlignment.Left;
+      VerticalStack.Children.Add(HorizontalStackOne);
+
+      Label ErrorDesc = new Label();
+      ErrorDesc.Content = "MyGov Error:";
+      ErrorDesc.FontSize = 14;
+      HorizontalStackOne.Children.Add(ErrorDesc);
+
+      Label LabelErrorValue = new Label();
+      LabelErrorValue.FontSize = 14;
+      LabelErrorValue.Foreground = Brushes.Red;
+      Binding binding = new Binding();
+      binding.Path = new PropertyPath("MyGovError");
+      binding.Source = Presenter;  // view model?
+      BindingOperations.SetBinding(LabelErrorValue, Label.ContentProperty, binding);
+      HorizontalStackOne.Children.Add(LabelErrorValue);
+
+      StackPanel HorizontalStackTwo = new StackPanel();
+      HorizontalStackTwo.Orientation = Orientation.Horizontal;
+      HorizontalStackTwo.HorizontalAlignment = HorizontalAlignment.Left;
+      VerticalStack.Children.Add(HorizontalStackTwo);
+
+      Label ErrorDescriptionDesc = new Label();
+      ErrorDescriptionDesc.Content = "Error Description:";
+      ErrorDescriptionDesc.FontSize = 14;
+      HorizontalStackTwo.Children.Add(ErrorDescriptionDesc);
+
+      Label LabelErrorDescriptionValue = new Label();
+      LabelErrorDescriptionValue.FontSize = 14;
+      LabelErrorDescriptionValue.Foreground = Brushes.Red;
+      Binding binding2 = new Binding();
+      binding2.Path = new PropertyPath("MyGovErrorDescription");
+      binding2.Source = Presenter;  // view model?
+      BindingOperations.SetBinding(LabelErrorDescriptionValue, Label.ContentProperty, binding2);
+      HorizontalStackTwo.Children.Add(LabelErrorDescriptionValue);
+
+      StackPanel HorizontalStackThree = new StackPanel();
+      HorizontalStackThree.Orientation = Orientation.Horizontal;
+      HorizontalStackThree.HorizontalAlignment = HorizontalAlignment.Left;
+      VerticalStack.Children.Add(HorizontalStackThree);
+
+      Button ButCancel = new Button();
+      ButCancel.Content = "OK";
+      ButCancel.Width = 50;
+      ButCancel.Height = 20;
+      ButCancel.Click += Button_Click_AddUser;
+      HorizontalStackThree.Children.Add(ButCancel);
+
+      Grid.SetColumn(Border, 2);
+      Grid.SetRow(Border, 0);
+      AddRightPanel(Border);
     }
 
     private void Button_Click_AddUser(object sender, RoutedEventArgs e)
@@ -128,7 +262,9 @@ namespace MyHRMobile.FhirGatewayTool
 
       TextBlock InfoText = new TextBlock();
       InfoText.TextWrapping = TextWrapping.Wrap;
-      InfoText.Text = $"Create a friendly Account Username for this user . When you hit '{MyGovButtonText}' you will be sent to the MyGov authentication page. If the authentication is successful your new account will be save for use.";
+      InfoText.Text = $"Create a friendly account name for this user . When you hit '{MyGovButtonText}' you will be sent to the MyGov authentication page. If the authentication is successful your new account will be save for use.";
+      InfoText.FontSize = 14;
+      InfoText.Margin = new Thickness(5);
       InfoTextBoarder.Child = InfoText;
 
 
@@ -138,7 +274,7 @@ namespace MyHRMobile.FhirGatewayTool
       PanelAddUser.Children.Add(PanelHorizontalControls);
 
       Label LabelUsername = new Label();
-      LabelUsername.Content = "Username:";
+      LabelUsername.Content = "Account name:";
       TextBox TextBoxUsername = new TextBox();
       TextBoxUsername.Margin = new Thickness(3);
       TextBoxUsername.Width = 150;
@@ -206,15 +342,15 @@ namespace MyHRMobile.FhirGatewayTool
       }
     }
 
-    private void ComboBoxAccount_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-      if (e.Source != null && e.Source is ComboBox AccountCombo)
-      {
-        if (AccountCombo.SelectedItem is ViewModel.UserAccountView UserAccountView)
-        {
-          UiService.SetCurrentUserAcccount(UserAccountView);
-        }
-      }
-    }
+    //private void ComboBoxAccount_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    //{
+    //  if (e.Source != null && e.Source is ComboBox AccountCombo)
+    //  {
+    //    if (AccountCombo.SelectedItem is ViewModel.UserAccountView UserAccountView)
+    //    {
+    //      UiService.SetCurrentUserAcccount(UserAccountView);
+    //    }
+    //  }
+    //}
   }
 }

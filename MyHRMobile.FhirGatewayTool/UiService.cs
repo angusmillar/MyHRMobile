@@ -67,11 +67,11 @@ namespace MyHRMobile.FhirGatewayTool
       }
     }
 
-    public void UpdateView(ViewModel.MainViewModel MainViewModel)
+    public void UpdateView(ViewModel.Presenter Presenter)
     {
-      MainViewModel.Client_id = ApplicationStore.Client_id;
-      MainViewModel.Client_secret = ApplicationStore.Client_secret;
-      MainViewModel.UserAccountViewList.Clear();
+      Presenter.Client_id = ApplicationStore.Client_id;
+      Presenter.Client_secret = ApplicationStore.Client_secret;
+      //Presenter.UserAccountViewList.Clear();
       foreach (var x in this.ApplicationStore.UserList)
       {
         var User = new ViewModel.UserAccountView()
@@ -84,8 +84,10 @@ namespace MyHRMobile.FhirGatewayTool
           Scope = x.Scope,
           Username = x.Username
         };
-        MainViewModel.UserAccountViewList.Add(User);
+        Presenter.AddUserAccountViewList.Add(User);
       }
+      if (Presenter.UserAccountViewList.Count > 0)
+        Presenter.CurrentUserAccount = Presenter.UserAccountViewList[0];
     }
     public void SetCurrentUserAcccount(ViewModel.UserAccountView UserAccountView)
     {
