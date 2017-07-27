@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyHRMobile.Common", "MyHRMobile.Common\MyHRMobile.Common.csproj", "{5A6B26D0-7D7F-4F1F-933A-5F18C9A65DF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyHRMobile.Rest", "MyHRMobile.Rest\MyHRMobile.Rest.csproj", "{92AA7617-9687-4FD5-AF7C-8A2F3A06E43C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyHRMobile.Runner", "MyHRMobile.Runner\MyHRMobile.Runner.csproj", "{F4757D16-8D36-46C8-827F-E56DF26A9CEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyHRMobile.Test", "MyHRMobile.Test\MyHRMobile.Test.csproj", "{F08804ED-A5D2-4941-8A99-DB9C5FEC622B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyHRMobile.ApiV1_0_0_hotfix", "MyHRMobile.ApiV1_0_0_hotfix\MyHRMobile.ApiV1_0_0_hotfix.csproj", "{49F9B561-14A5-4C76-AA10-AD5787DF071E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyHRMobile.FhirGatewayTool", "MyHRMobile.FhirGatewayTool\MyHRMobile.FhirGatewayTool.csproj", "{3F47C24C-C95D-4BA0-82EF-77F0FC0526EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A6B26D0-7D7F-4F1F-933A-5F18C9A65DF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A6B26D0-7D7F-4F1F-933A-5F18C9A65DF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A6B26D0-7D7F-4F1F-933A-5F18C9A65DF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A6B26D0-7D7F-4F1F-933A-5F18C9A65DF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92AA7617-9687-4FD5-AF7C-8A2F3A06E43C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92AA7617-9687-4FD5-AF7C-8A2F3A06E43C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92AA7617-9687-4FD5-AF7C-8A2F3A06E43C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92AA7617-9687-4FD5-AF7C-8A2F3A06E43C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4757D16-8D36-46C8-827F-E56DF26A9CEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4757D16-8D36-46C8-827F-E56DF26A9CEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4757D16-8D36-46C8-827F-E56DF26A9CEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4757D16-8D36-46C8-827F-E56DF26A9CEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F08804ED-A5D2-4941-8A99-DB9C5FEC622B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F08804ED-A5D2-4941-8A99-DB9C5FEC622B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F08804ED-A5D2-4941-8A99-DB9C5FEC622B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F08804ED-A5D2-4941-8A99-DB9C5FEC622B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49F9B561-14A5-4C76-AA10-AD5787DF071E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49F9B561-14A5-4C76-AA10-AD5787DF071E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49F9B561-14A5-4C76-AA10-AD5787DF071E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49F9B561-14A5-4C76-AA10-AD5787DF071E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F47C24C-C95D-4BA0-82EF-77F0FC0526EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F47C24C-C95D-4BA0-82EF-77F0FC0526EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F47C24C-C95D-4BA0-82EF-77F0FC0526EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F47C24C-C95D-4BA0-82EF-77F0FC0526EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
