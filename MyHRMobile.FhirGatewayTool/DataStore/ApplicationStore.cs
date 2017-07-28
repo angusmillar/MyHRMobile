@@ -10,11 +10,10 @@ namespace MyHRMobile.FhirGatewayTool.DataStore
 {
   public class ApplicationStore
   {
-    public string Client_id { get; set; }
-    public string Client_secret { get; set; }
+    public string App_id { get; set; }
+    public string App_secret { get; set; }
+    public string App_Version { get; set; }
     public List<UserAccount> UserList { get; set; }
-
-
   }
 
   public class UserAccount : INotifyPropertyChanged

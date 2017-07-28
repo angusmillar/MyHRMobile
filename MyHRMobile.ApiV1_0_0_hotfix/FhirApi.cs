@@ -61,7 +61,7 @@ namespace MyHRMobile.API_V1_0_0_hotfix
       if (ApiRequestHeader == null)
         throw new NullReferenceException("ApiRequestHeader can not be null");
 
-      string GetRecordListQuery = "fhir/ v1.0.0]/RelatedPerson";
+      string GetRecordListQuery = "fhir/v1.0.0/RelatedPerson";
       if (!string.IsNullOrEmpty(Ihi))
         GetRecordListQuery = $"{GetRecordListQuery}?id={Ihi}&_format={GetFormatString(Format)}";
       else

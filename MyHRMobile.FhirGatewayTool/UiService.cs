@@ -33,8 +33,8 @@ namespace MyHRMobile.FhirGatewayTool
       {
         FhirApi FhirApi = new FhirApi(FhirGatewayEndpoint);
         var AccessTokenRequest = new AccessTokenRequest();
-        AccessTokenRequest.Client_id = ApplicationStore.Client_id;
-        AccessTokenRequest.Client_secret = ApplicationStore.Client_secret;
+        AccessTokenRequest.Client_id = ApplicationStore.App_id;
+        AccessTokenRequest.Client_secret = ApplicationStore.App_secret;
         AccessTokenRequest.Code = CurrectUserAccount.AuthorisationCode;
 
         TokenResponse TokenResponse = FhirApi.GetAccessToken(AccessTokenRequest);
@@ -69,8 +69,8 @@ namespace MyHRMobile.FhirGatewayTool
 
     public void UpdateView(ViewModel.Presenter Presenter)
     {
-      Presenter.Client_id = ApplicationStore.Client_id;
-      Presenter.Client_secret = ApplicationStore.Client_secret;
+      Presenter.Client_id = ApplicationStore.App_id;
+      Presenter.Client_secret = ApplicationStore.App_secret;
       //Presenter.UserAccountViewList.Clear();
       foreach (var x in this.ApplicationStore.UserList)
       {
@@ -87,7 +87,9 @@ namespace MyHRMobile.FhirGatewayTool
         Presenter.AddUserAccountViewList.Add(User);
       }
       if (Presenter.UserAccountViewList.Count > 0)
+      {
         Presenter.CurrentUserAccount = Presenter.UserAccountViewList[0];
+      }
     }
     public void SetCurrentUserAcccount(ViewModel.UserAccountView UserAccountView)
     {
@@ -101,6 +103,34 @@ namespace MyHRMobile.FhirGatewayTool
       this.CurrectUserAccount.Username = UserAccountView.Username;
     }
 
+    public bool GetRecordList(ViewModel.UserAccountView UserAccountView, ViewModel.Presenter Presenter)
+    {
+      FhirApi FhirApi = new FhirApi(FhirGatewayEndpoint);
+      ApiRequestHeader ApiRequestHeader = new ApiRequestHeader(UserAccountView.AccessToken, this.ApplicationStore.App_id, this.ApplicationStore.App_Version);
+
+      FhirApi.ApiRequestHeader = ApiRequestHeader;
+
+      RecordListResponse RecordListResponse = FhirApi.GetRecordList();
+      if (RecordListResponse.StatusCode == System.Net.HttpStatusCode.OK)
+      {
+        Presenter.TextEditorRight = RecordListResponse.Body;
+        return true;
+      }
+      else
+      {
+        if (RecordListResponse.ErrorResponse != null)
+        {
+          Presenter.TextEditorRight = RecordListResponse.ErrorResponse.Description;
+          return false;
+        }
+        else
+        {
+          Presenter.TextEditorRight = $"Unknown Error, Status code {RecordListResponse.StatusCode.ToString()}";
+          return false;
+        }
+      }
+    }
+
     public void ResetApplicationStore()
     {
       File.Delete(ApplicationStoreFilePath);
@@ -111,8 +141,9 @@ namespace MyHRMobile.FhirGatewayTool
       if (!File.Exists(ApplicationStoreFilePath))
       {
         ApplicationStore AppStore = new ApplicationStore();
-        AppStore.Client_id = "28198d27-c475-4695-83d3-1f1f8256e01b";
-        AppStore.Client_secret = "1c73a74b-45fc-4ee4-a400-15a398e46143";
+        AppStore.App_id = "28198d27-c475-4695-83d3-1f1f8256e01b";
+        AppStore.App_secret = "1c73a74b-45fc-4ee4-a400-15a398e46143";
+        AppStore.App_Version = "1.0";
         AppStore.UserList = new List<UserAccount>();
         try
         {

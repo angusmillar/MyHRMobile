@@ -86,6 +86,21 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
       }
     }
 
+    private string _TextEditorRight { get; set; }
+    public string TextEditorRight
+    {
+      get
+      {
+        return _TextEditorRight;
+      }
+      set
+      {
+        _TextEditorRight = value;
+        NotifyPropertyChanged("TextEditorRight");
+      }
+    }
+
+
     private ObservableCollection<UserAccountView> _UserAccountViewList { get; set; }
     public ObservableCollection<UserAccountView> AddUserAccountViewList
     {

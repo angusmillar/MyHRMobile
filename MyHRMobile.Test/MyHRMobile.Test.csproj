@@ -59,6 +59,7 @@
     <Compile Include="Test_Api_V1_0_0_hotfix.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

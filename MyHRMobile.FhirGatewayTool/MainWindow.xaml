@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyHRMobile.FhirGatewayTool"
-        xmlns:MyView="clr-namespace:MyHRMobile.FhirGatewayTool.ViewModel"
+        xmlns:MyView="clr-namespace:MyHRMobile.FhirGatewayTool.ViewModel"        
         mc:Ignorable="d"
         Title="Fhir Gateway Tool" MinHeight="650" MinWidth="1000" Height="650" Width="1000">
 
@@ -12,62 +12,74 @@
     <MyView:Presenter/>
   </Window.DataContext>
 
-  <Grid Name="GridMain" >
+  <local:GridControl x:Name="GridMain" 
+                     ShowCustomGridLines="True" 
+                     GridLineBrush="DarkGreen"  
+                     GridLineThickness="3" 
+                     Margin="5">
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*" MinWidth="190"/>
+      <ColumnDefinition Width="305" />
     </Grid.ColumnDefinitions>
 
     <Grid.RowDefinitions>
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
-    <Grid Grid.Row="0" Grid.Column="0">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="10" />
-        <RowDefinition Height="*" />
-        <RowDefinition Height="Auto" />
-      </Grid.RowDefinitions>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="10" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="10" />
-      </Grid.ColumnDefinitions>
-      <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Grid.Column="1" Grid.Row="1">
-        <GroupBox Header="User Account Management" BorderBrush="DarkGray" BorderThickness="2" Width="300" Margin="0,0,0,10">
-          <StackPanel Margin="5">
-            <Button Content="New User Account" Width="120" Click="Button_Click_AddUser" HorizontalAlignment="Left"/>
-            <Label Content="Select an Account"></Label>
-            <ComboBox Name="ComboBoxAccount" 
+    <Border BorderBrush="DarkGray" BorderThickness="2" CornerRadius="3"
+            Grid.Row="0" Grid.Column="0"
+            VerticalAlignment="Stretch">
+
+      <local:GridControl x:Name="LeftGrid" 
+                         ShowCustomGridLines="True" 
+                         GridLineBrush="Purple" 
+                         GridLineThickness="0" 
+                         Margin="0" >
+        <Grid.RowDefinitions>
+          <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+
+          <ColumnDefinition Width="Auto" />
+
+        </Grid.ColumnDefinitions>
+        <StackPanel HorizontalAlignment="Center"  Orientation="Vertical" Grid.Column="0" Grid.Row="1" Width="302">
+          <GroupBox Header="User Account Management" HorizontalContentAlignment="Center" BorderBrush="DarkGray" BorderThickness="1" Margin="2">
+            <StackPanel Margin="5">
+              <Button Content="New User Account" Width="120" Click="Button_Click_AddUser" HorizontalAlignment="Left"/>
+              <Label Content="Select an Account"></Label>
+              <ComboBox Name="ComboBoxAccount" 
                       ItemsSource="{Binding UserAccountViewList}" 
                       SelectedValue="{Binding CurrentUserAccount}"                       
                       >
-            </ComboBox>
-          </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Selected Account Details" BorderBrush="DarkGray" BorderThickness="2" Width="300" Margin="0,0,0,50">
-          <Grid HorizontalAlignment="Left" Height="auto" VerticalAlignment="Top"
+              </ComboBox>
+            </StackPanel>
+          </GroupBox>
+          <GroupBox Header="Selected Account Details" BorderBrush="DarkGray" BorderThickness="1" Margin="2">
+            <Grid HorizontalAlignment="Left" Height="auto" VerticalAlignment="Top"
                   Width="253" Margin="5">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="auto" />
-              <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Label Content="Account:" FontWeight="DemiBold" Grid.Column="0" Grid.Row="0"></Label>
-            <Label Content="{Binding CurrentUserAccount.Username, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="0"></Label>
-            <Label Content="Access token expiry:" FontWeight="DemiBold" Grid.Column="0" Grid.Row="1"></Label>
-            <Label Content="{Binding CurrentUserAccount.AccessExpiresString, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="1"></Label>
-            <Label Content="Refresh token expiry" FontWeight="DemiBold" Grid.Column="0" Grid.Row="2"></Label>
-            <Label Content="{Binding CurrentUserAccount.RefreshExpiresString, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="2"></Label>
-          </Grid>
-        </GroupBox>
-      </StackPanel>
-    </Grid>
-
-  </Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <Label Content="Account:" FontWeight="DemiBold" Grid.Column="0" Grid.Row="0"></Label>
+              <Label Content="{Binding CurrentUserAccount.Username, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="0"></Label>
+              <Label Content="Access token expiry:" FontWeight="DemiBold" Grid.Column="0" Grid.Row="1"></Label>
+              <Label Content="{Binding CurrentUserAccount.AccessExpiresString, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="1"></Label>
+              <Label Content="Refresh token expiry" FontWeight="DemiBold" Grid.Column="0" Grid.Row="2"></Label>
+              <Label Content="{Binding CurrentUserAccount.RefreshExpiresString, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="2"></Label>
+              <Button Content="GetRecordlistTest" Click="Button_Click_GetRecordListTest" Grid.Column="0" Grid.Row="4"></Button>
+            </Grid>
+          </GroupBox>
+        </StackPanel>
+      </local:GridControl>
+    </Border>
+  </local:GridControl>
 
 </Window>

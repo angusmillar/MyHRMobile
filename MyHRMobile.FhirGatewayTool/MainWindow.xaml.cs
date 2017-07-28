@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MyHRMobile.FhirGatewayTool.Extensions;
 
 namespace MyHRMobile.FhirGatewayTool
 {
@@ -21,9 +22,9 @@ namespace MyHRMobile.FhirGatewayTool
   public partial class MainWindow : Window
   {
     private List<UIElement> RightPanleStateList;
-    private WebBrowser MyGovWeb = null;
-    private GridSplitter Split = null;
-    private StackPanel PanelAddUser = null;
+    //private WebBrowser MyGovWeb = null;
+    //private GridSplitter Split = null;
+    //private StackPanel PanelAddUser = null;
     private UiService UiService;
     private ViewModel.Presenter Presenter;
 
@@ -37,27 +38,26 @@ namespace MyHRMobile.FhirGatewayTool
       UiService = new UiService();
       UiService.PrimeApplicationStore();
       UiService.LoadApplicationStore();
-      DataContext = Presenter;
       UiService.UpdateView(Presenter);
-
-
+      DataContext = Presenter;
 
       SetupRightPanel();
-      //ComboBoxAccount.ItemsSource = MainViewModel.UserAccountViewList;
-      //ComboBoxAccount.SelectedItem = Presenter.UserAccountViewList[0];
+
     }
 
     private void SetupRightPanel()
     {
-      ColumnDefinition gridGrip = new ColumnDefinition();
-      gridGrip.Width = GridLength.Auto;
+      //ColumnDefinition gridGrip = new ColumnDefinition();
+      //gridGrip.Width = GridLength.Auto;
 
-      ColumnDefinition gridColumnRight = new ColumnDefinition();
-      gridColumnRight.Width = new GridLength(2, GridUnitType.Star);
-      gridColumnRight.MinWidth = 490;
+      ColumnDefinition ColumnRight = new ColumnDefinition();
+      ColumnRight.Width = new GridLength(1, GridUnitType.Star);
+      //ColumnRight.MinWidth = 490;
+      //gridColumnRight.MaxWidth = 800;
+      //GridMain.ColumnDefinitions.Add(gridGrip);
+      GridMain.ColumnDefinitions.Add(ColumnRight);
 
-      GridMain.ColumnDefinitions.Add(gridGrip);
-      GridMain.ColumnDefinitions.Add(gridColumnRight);
+
     }
 
     private void AddRightPanel(UIElement Element)
@@ -66,21 +66,21 @@ namespace MyHRMobile.FhirGatewayTool
       DropRightPanel();
 
       //Create the splitter
-      Split = new GridSplitter();
-      Split.Name = "Split";
-      Split.HorizontalAlignment = HorizontalAlignment.Right;
-      Split.VerticalAlignment = VerticalAlignment.Stretch;
-      Split.ResizeBehavior = GridResizeBehavior.PreviousAndNext;
-      Split.Width = 5;
-      Split.Background = Brushes.LightGray;
-      Grid.SetColumn(Split, 1);
+      //GridSplitter Split = new GridSplitter();
+      //Split.Name = "Split";
+      //Split.HorizontalAlignment = HorizontalAlignment.Right;
+      //Split.VerticalAlignment = VerticalAlignment.Stretch;
+      //Split.ResizeBehavior = GridResizeBehavior.PreviousAndNext;
+      //Split.Width = 5;
+      //Split.Background = Brushes.LightGray;
+      //Grid.SetColumn(Split, 1);
 
-      //Remember State
-      RightPanleStateList.Add(Split);
+      ////Remember State
+      //RightPanleStateList.Add(Split);
       RightPanleStateList.Add(Element);
 
       //Add elements to Grid
-      GridMain.Children.Add(Split);
+      //GridMain.Children.Add(Split);
       GridMain.Children.Add(Element);
     }
 
@@ -246,9 +246,10 @@ namespace MyHRMobile.FhirGatewayTool
       UiService.CurrectUserAccount = new DataStore.UserAccount();
 
       string MyGovButtonText = "Save & MyGov Login";
-      PanelAddUser = new StackPanel();
+      StackPanel PanelAddUser = new StackPanel();
       PanelAddUser.Orientation = Orientation.Vertical;
       PanelAddUser.Margin = new Thickness(10);
+      PanelAddUser.HorizontalAlignment = HorizontalAlignment.Left;
 
       StackPanel PanelHorizontalsInfo = new StackPanel();
       PanelHorizontalsInfo.Orientation = Orientation.Horizontal;
@@ -256,8 +257,8 @@ namespace MyHRMobile.FhirGatewayTool
       Border InfoTextBoarder = new Border();
       InfoTextBoarder.BorderBrush = Brushes.DarkGray;
       InfoTextBoarder.BorderThickness = new Thickness(2);
-      InfoTextBoarder.Width = 400;
-      InfoTextBoarder.Margin = new Thickness(10, 10, 0, 0);
+      InfoTextBoarder.Width = 500;
+      //InfoTextBoarder.Margin = new Thickness(10, 10, 0, 0);
       PanelHorizontalsInfo.Children.Add(InfoTextBoarder);
 
       TextBlock InfoText = new TextBlock();
@@ -266,8 +267,6 @@ namespace MyHRMobile.FhirGatewayTool
       InfoText.FontSize = 14;
       InfoText.Margin = new Thickness(5);
       InfoTextBoarder.Child = InfoText;
-
-
 
       StackPanel PanelHorizontalControls = new StackPanel();
       PanelHorizontalControls.Orientation = Orientation.Horizontal;
@@ -297,6 +296,7 @@ namespace MyHRMobile.FhirGatewayTool
       CancelAddUserBut.Margin = new Thickness(3);
       CancelAddUserBut.Click += CancelAddUserBut_Click;
       PanelHorizontalControls.Children.Add(CancelAddUserBut);
+
 
       AddRightPanel(PanelAddUser);
     }
@@ -333,7 +333,7 @@ namespace MyHRMobile.FhirGatewayTool
       }
       else
       {
-        MyGovWeb = new WebBrowser();
+        WebBrowser MyGovWeb = new WebBrowser();
         MyGovWeb.LoadCompleted += MyGovWeb_LoadCompleted;
         Grid.SetRow(MyGovWeb, 1);
         Grid.SetColumn(MyGovWeb, 2);
@@ -342,15 +342,54 @@ namespace MyHRMobile.FhirGatewayTool
       }
     }
 
-    //private void ComboBoxAccount_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    //{
-    //  if (e.Source != null && e.Source is ComboBox AccountCombo)
-    //  {
-    //    if (AccountCombo.SelectedItem is ViewModel.UserAccountView UserAccountView)
-    //    {
-    //      UiService.SetCurrentUserAcccount(UserAccountView);
-    //    }
-    //  }
-    //}
+    private void Button_Click_GetRecordListTest(object sender, RoutedEventArgs e)
+    {
+
+
+      ICSharpCode.AvalonEdit.TextEditor TextEditor = new ICSharpCode.AvalonEdit.TextEditor();
+      TextEditor.SetSyntaxType(AvalonEditSyntaxTypes.Xml);
+      TextEditor.WordWrap = false;
+      TextEditor.ShowLineNumbers = true;
+      TextEditor.FontFamily = new FontFamily("Consolas");
+      TextEditor.FontSize = 12;
+      ExtentionAvalonEdit.AvalonEditContextMenu(TextEditor);
+
+      if (UiService.GetRecordList(Presenter.CurrentUserAccount, Presenter))
+      {
+
+        TextEditor.Text = MyHRMobile.Common.Utility.XmlTool.BeautifyXML(Presenter.TextEditorRight);
+      }
+      else
+      {
+        TextEditor.Text = Presenter.TextEditorRight;
+      }
+
+      Grid RightGrid = new Grid();
+      ColumnDefinition ColumnOne = new ColumnDefinition();
+      //ColumnOne.Width = new GridLength(0, GridUnitType.Auto);
+      RightGrid.ColumnDefinitions.Add(ColumnOne);
+
+      RowDefinition RowOne = new RowDefinition();
+      //RowOne.Height = new GridLength(0, GridUnitType.Auto);
+      RightGrid.RowDefinitions.Add(RowOne);
+
+      RowDefinition RowTwo = new RowDefinition();
+      //RowTwo.Height = new GridLength(10);
+      RightGrid.RowDefinitions.Add(RowTwo);
+
+      Grid.SetColumn(TextEditor, 0);
+      Grid.SetRowSpan(TextEditor, 2);
+
+      Grid.SetColumn(RightGrid, 1);
+      Grid.SetRow(RightGrid, 0);
+
+      RightGrid.Children.Add(TextEditor);
+      //DropRightPanel();
+      // SetupRightPanel();
+      AddRightPanel(RightGrid);
+
+    }
+
+
   }
 }
