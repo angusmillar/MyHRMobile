@@ -11,6 +11,21 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
 {
   public class Presenter : ViewModelBase, INotifyPropertyChanged
   {
+    private UiService _UiService;
+    public UiService UiService
+    {
+      get
+      {
+        return _UiService;
+      }
+      set
+      {
+        _UiService = value;
+        UiService.PrimeApplicationStore();
+        UiService.LoadApplicationStore();
+        UiService.UpdateView(this);
+      }
+    }
     public Presenter()
     {
       this._UserAccountViewList = new ObservableCollection<UserAccountView>();
@@ -26,6 +41,10 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
       set
       {
         _CurrentUserAccount = value;
+        if (_CurrentUserAccount != null)
+        {
+          UiService.GetRefeashToken(_CurrentUserAccount);
+        }
         NotifyPropertyChanged("CurrentUserAccount");
       }
     }
@@ -125,7 +144,7 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
 
   }
 
-  public class UserAccountView
+  public class UserAccountView : ViewModelBase, INotifyPropertyChanged
   {
     public string Username { get; set; }
     public string AuthorisationCode { get; set; }
@@ -147,12 +166,33 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
         return $"{RefreshExpires.ToShortDateString()} {RefreshExpires.ToShortTimeString()}";
       }
     }
-
     public string Scope { get; set; }
+
+    private ObservableCollection<UserAccountRecord> _UserAccountRecordList { get; set; }
+    public ObservableCollection<UserAccountRecord> UserAccountRecordList
+    {
+      get { return _UserAccountRecordList; }
+      set
+      {
+        if (value != _UserAccountRecordList)
+        {
+          _UserAccountRecordList = value;
+          NotifyPropertyChanged("UserAccountRecordList");
+        }
+      }
+    }
+
 
     public override string ToString()
     {
       return Username;
     }
+  }
+
+  public class UserAccountRecord
+  {
+    public string Family { get; set; }
+    public string Given { get; set; }
+    public string Ihi { get; set; }
   }
 }

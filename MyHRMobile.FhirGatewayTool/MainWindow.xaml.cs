@@ -36,57 +36,26 @@ namespace MyHRMobile.FhirGatewayTool
 
       Presenter = new ViewModel.Presenter();
       UiService = new UiService();
-      UiService.PrimeApplicationStore();
-      UiService.LoadApplicationStore();
-      UiService.UpdateView(Presenter);
+      Presenter.UiService = UiService;
       DataContext = Presenter;
-
-      SetupRightPanel();
-
     }
 
-    private void SetupRightPanel()
-    {
-      //ColumnDefinition gridGrip = new ColumnDefinition();
-      //gridGrip.Width = GridLength.Auto;
 
-      ColumnDefinition ColumnRight = new ColumnDefinition();
-      ColumnRight.Width = new GridLength(1, GridUnitType.Star);
-      //ColumnRight.MinWidth = 490;
-      //gridColumnRight.MaxWidth = 800;
-      //GridMain.ColumnDefinitions.Add(gridGrip);
-      GridMain.ColumnDefinitions.Add(ColumnRight);
-
-
-    }
-
-    private void AddRightPanel(UIElement Element)
+    private void RightPanelAdd(UIElement Element)
     {
       //Clear anything already there
       DropRightPanel();
 
-      //Create the splitter
-      //GridSplitter Split = new GridSplitter();
-      //Split.Name = "Split";
-      //Split.HorizontalAlignment = HorizontalAlignment.Right;
-      //Split.VerticalAlignment = VerticalAlignment.Stretch;
-      //Split.ResizeBehavior = GridResizeBehavior.PreviousAndNext;
-      //Split.Width = 5;
-      //Split.Background = Brushes.LightGray;
-      //Grid.SetColumn(Split, 1);
-
-      ////Remember State
-      //RightPanleStateList.Add(Split);
+      //Remember State      
       RightPanleStateList.Add(Element);
 
-      //Add elements to Grid
-      //GridMain.Children.Add(Split);
+      //Add the elements to Grid      
       GridMain.Children.Add(Element);
     }
 
     private void DropRightPanel()
     {
-      //GridMain.Children.Remove(Split);
+      //Remove all elements in the state list
       RightPanleStateList.ForEach(x => GridMain.Children.Remove(x));
     }
 
@@ -107,6 +76,8 @@ namespace MyHRMobile.FhirGatewayTool
               ComboBoxAccount.ItemsSource = UiService.ApplicationStore.UserList;
               ComboBoxAccount.SelectedItem = UiService.ApplicationStore.UserList.SingleOrDefault(x => x.Username == UiService.CurrectUserAccount.Username);
               DropRightPanel();
+              ReportMyGovLoginOutcome(true);
+
             }
           }
           else
@@ -123,7 +94,7 @@ namespace MyHRMobile.FhirGatewayTool
               {
                 Presenter.MyGovErrorDescription = ErrorDescription;
               }
-              ReportMyGovLoginError();
+              ReportMyGovLoginOutcome(false);
             }
           }
         }
@@ -147,142 +118,200 @@ namespace MyHRMobile.FhirGatewayTool
               {
                 Presenter.MyGovErrorDescription = ErrorDescription;
               }
-              ReportMyGovLoginError();
+              ReportMyGovLoginOutcome(false);
             }
             else
             {
               Presenter.MyGovError = $"Unknown Error";
               Presenter.MyGovErrorDescription = $"URL was: {e.Uri.OriginalString}";
-              ReportMyGovLoginError();
+              ReportMyGovLoginOutcome(false);
             }
           }
           else
           {
             Presenter.MyGovError = $"Unknown Error";
             Presenter.MyGovErrorDescription = $"URL was: {e.Uri.OriginalString}";
-            ReportMyGovLoginError();
+            ReportMyGovLoginOutcome(false);
           }
         }
         else
         {
           Presenter.MyGovError = $"Unknown Error";
           Presenter.MyGovErrorDescription = $"URL was: {e.Uri.OriginalString}";
-          ReportMyGovLoginError();
+          ReportMyGovLoginOutcome(false);
         }
       }
     }
 
-    private void ReportMyGovLoginError()
+    private void ReportMyGovLoginOutcome(bool IsSuccessFull)
     {
-      Border Border = new Border();
-      Border.BorderThickness = new Thickness(3);
-      Border.BorderBrush = Brushes.Salmon;
-      Border.Margin = new Thickness(10);
+      DockPanel OuterDockPanel = new DockPanel();
+      Grid.SetRow(OuterDockPanel, 1);
+      Grid.SetColumn(OuterDockPanel, 2);
 
-      StackPanel VerticalStack = new StackPanel();
-      VerticalStack.Margin = new Thickness(20);
-      VerticalStack.Orientation = Orientation.Vertical;
-      VerticalStack.HorizontalAlignment = HorizontalAlignment.Left;
-      Border.Child = VerticalStack;
+      StackPanel VerticalPanel = new StackPanel();
+      VerticalPanel.Orientation = Orientation.Vertical;
+      VerticalPanel.Margin = new Thickness(5);
+      VerticalPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+      OuterDockPanel.Children.Add(VerticalPanel);
 
-      StackPanel HorizontalStackOne = new StackPanel();
-      HorizontalStackOne.Orientation = Orientation.Horizontal;
-      HorizontalStackOne.HorizontalAlignment = HorizontalAlignment.Left;
-      VerticalStack.Children.Add(HorizontalStackOne);
+      GroupBox MainGroupBox = new GroupBox();
+      MainGroupBox.Header = "Create a User Account";
+      MainGroupBox.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+      VerticalPanel.Children.Add(MainGroupBox);
 
-      Label ErrorDesc = new Label();
-      ErrorDesc.Content = "MyGov Error:";
-      ErrorDesc.FontSize = 14;
-      HorizontalStackOne.Children.Add(ErrorDesc);
+      GridControl InnerGrid = new GridControl();
+      ColumnDefinition ColOne = new ColumnDefinition();
+      ColOne.Width = new GridLength(0, GridUnitType.Auto);
+      InnerGrid.ColumnDefinitions.Add(ColOne);
+      RowDefinition RowOne = new RowDefinition();
+      RowOne.Height = new GridLength(0, GridUnitType.Auto);
+      InnerGrid.RowDefinitions.Add(RowOne);
+      RowDefinition RowTwo = new RowDefinition();
+      RowTwo.Height = new GridLength(0, GridUnitType.Auto);
+      InnerGrid.RowDefinitions.Add(RowTwo);
+      MainGroupBox.Content = InnerGrid;
 
-      Label LabelErrorValue = new Label();
-      LabelErrorValue.FontSize = 14;
-      LabelErrorValue.Foreground = Brushes.Red;
-      Binding binding = new Binding();
-      binding.Path = new PropertyPath("MyGovError");
-      binding.Source = Presenter;  // view model?
-      BindingOperations.SetBinding(LabelErrorValue, Label.ContentProperty, binding);
-      HorizontalStackOne.Children.Add(LabelErrorValue);
+      if (IsSuccessFull)
+      {
+        TextBlock InfoTextSuccess = new TextBlock();
+        InfoTextSuccess.TextWrapping = TextWrapping.Wrap;
+        InfoTextSuccess.Text = $"You MyGov authentication was successfully.";
+        InfoTextSuccess.FontSize = 24;
+        InfoTextSuccess.Foreground = Brushes.Green;
+        InfoTextSuccess.Margin = new Thickness(5);
+        Grid.SetColumn(InfoTextSuccess, 0);
+        Grid.SetRow(InfoTextSuccess, 0);
+        InnerGrid.Children.Add(InfoTextSuccess);
 
-      StackPanel HorizontalStackTwo = new StackPanel();
-      HorizontalStackTwo.Orientation = Orientation.Horizontal;
-      HorizontalStackTwo.HorizontalAlignment = HorizontalAlignment.Left;
-      VerticalStack.Children.Add(HorizontalStackTwo);
+        TextBlock InfoTextMessage = new TextBlock();
+        InfoTextMessage.TextWrapping = TextWrapping.Wrap;
+        InfoTextMessage.Text = $"You are now able to select you Account name from the drop down on the left.\nYour account will be remembered and authentication managed. ";
+        InfoTextMessage.Margin = new Thickness(5);
+        Grid.SetColumn(InfoTextMessage, 0);
+        Grid.SetRow(InfoTextMessage, 1);
+        InnerGrid.Children.Add(InfoTextMessage);
+      }
+      else
+      {
+        TextBlock InfoTextSuccess = new TextBlock();
+        InfoTextSuccess.TextWrapping = TextWrapping.Wrap;
+        InfoTextSuccess.Text = $"You MyGov authentication was unsuccessfully.";
+        InfoTextSuccess.FontSize = 24;
+        InfoTextSuccess.Foreground = Brushes.Maroon;
+        InfoTextSuccess.Margin = new Thickness(5);
+        Grid.SetColumn(InfoTextSuccess, 0);
+        Grid.SetRow(InfoTextSuccess, 0);
+        InnerGrid.Children.Add(InfoTextSuccess);
 
-      Label ErrorDescriptionDesc = new Label();
-      ErrorDescriptionDesc.Content = "Error Description:";
-      ErrorDescriptionDesc.FontSize = 14;
-      HorizontalStackTwo.Children.Add(ErrorDescriptionDesc);
+        StackPanel HozStackOne = new StackPanel();
+        HozStackOne.Orientation = Orientation.Horizontal;
+        Grid.SetColumn(HozStackOne, 0);
+        Grid.SetRow(HozStackOne, 1);
+        InnerGrid.Children.Add(HozStackOne);
 
-      Label LabelErrorDescriptionValue = new Label();
-      LabelErrorDescriptionValue.FontSize = 14;
-      LabelErrorDescriptionValue.Foreground = Brushes.Red;
-      Binding binding2 = new Binding();
-      binding2.Path = new PropertyPath("MyGovErrorDescription");
-      binding2.Source = Presenter;  // view model?
-      BindingOperations.SetBinding(LabelErrorDescriptionValue, Label.ContentProperty, binding2);
-      HorizontalStackTwo.Children.Add(LabelErrorDescriptionValue);
+        Label LabelErrorCode = new Label();
+        LabelErrorCode.Content = "MyGov Error Code:";
+        LabelErrorCode.FontWeight = FontWeights.DemiBold;
 
-      StackPanel HorizontalStackThree = new StackPanel();
-      HorizontalStackThree.Orientation = Orientation.Horizontal;
-      HorizontalStackThree.HorizontalAlignment = HorizontalAlignment.Left;
-      VerticalStack.Children.Add(HorizontalStackThree);
+        HozStackOne.Children.Add(LabelErrorCode);
 
-      Button ButCancel = new Button();
-      ButCancel.Content = "OK";
-      ButCancel.Width = 50;
-      ButCancel.Height = 20;
-      ButCancel.Click += Button_Click_AddUser;
-      HorizontalStackThree.Children.Add(ButCancel);
+        TextBlock InfoTextMessage = new TextBlock();
+        InfoTextMessage.TextWrapping = TextWrapping.Wrap;
+        Binding binding = new Binding();
+        binding.Path = new PropertyPath("MyGovError");
+        binding.Source = Presenter;  // view model?
+        BindingOperations.SetBinding(InfoTextMessage, TextBlock.TextProperty, binding);
+        InfoTextMessage.Margin = new Thickness(5);
+        HozStackOne.Children.Add(InfoTextMessage);
 
-      Grid.SetColumn(Border, 2);
-      Grid.SetRow(Border, 0);
-      AddRightPanel(Border);
+        RowDefinition RowThree = new RowDefinition();
+        RowThree.Height = new GridLength(0, GridUnitType.Auto);
+        InnerGrid.RowDefinitions.Add(RowThree);
+
+        StackPanel HozStackTwo = new StackPanel();
+        HozStackTwo.Orientation = Orientation.Horizontal;
+        Grid.SetColumn(HozStackTwo, 0);
+        Grid.SetRow(HozStackTwo, 2);
+        InnerGrid.Children.Add(HozStackTwo);
+
+        Label LabelErrorDesc = new Label();
+        LabelErrorDesc.Content = "MyGov Error Description:";
+        LabelErrorDesc.FontWeight = FontWeights.DemiBold;
+        HozStackTwo.Children.Add(LabelErrorDesc);
+
+        TextBlock TextBlockErrDesc = new TextBlock();
+        TextBlockErrDesc.TextWrapping = TextWrapping.Wrap;
+        TextBlockErrDesc.Margin = new Thickness(5);
+        Binding binding2 = new Binding();
+        binding2.Path = new PropertyPath("MyGovErrorDescription");
+        binding2.Source = Presenter;  // view model?
+        BindingOperations.SetBinding(TextBlockErrDesc, TextBlock.TextProperty, binding2);
+        HozStackTwo.Children.Add(TextBlockErrDesc);
+      }
+
+      RightPanelAdd(OuterDockPanel);
     }
 
     private void Button_Click_AddUser(object sender, RoutedEventArgs e)
     {
-      //DropRightPanel();
       UiService.CurrectUserAccount = new DataStore.UserAccount();
 
       string MyGovButtonText = "Save & MyGov Login";
-      StackPanel PanelAddUser = new StackPanel();
-      PanelAddUser.Orientation = Orientation.Vertical;
-      PanelAddUser.Margin = new Thickness(10);
-      PanelAddUser.HorizontalAlignment = HorizontalAlignment.Left;
 
-      StackPanel PanelHorizontalsInfo = new StackPanel();
-      PanelHorizontalsInfo.Orientation = Orientation.Horizontal;
-      PanelAddUser.Children.Add(PanelHorizontalsInfo);
-      Border InfoTextBoarder = new Border();
-      InfoTextBoarder.BorderBrush = Brushes.DarkGray;
-      InfoTextBoarder.BorderThickness = new Thickness(2);
-      InfoTextBoarder.Width = 500;
-      //InfoTextBoarder.Margin = new Thickness(10, 10, 0, 0);
-      PanelHorizontalsInfo.Children.Add(InfoTextBoarder);
+      DockPanel OuterDockPanel = new DockPanel();
+      Grid.SetRow(OuterDockPanel, 1);
+      Grid.SetColumn(OuterDockPanel, 2);
+
+      StackPanel VerticalPanel = new StackPanel();
+      VerticalPanel.Orientation = Orientation.Vertical;
+      VerticalPanel.Margin = new Thickness(5);
+      //VerticalPanel.HorizontalAlignment = HorizontalAlignment.Left;
+      VerticalPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+      OuterDockPanel.Children.Add(VerticalPanel);
+
+      GroupBox MainGroupBox = new GroupBox();
+      MainGroupBox.Header = "Create a User Account";
+      MainGroupBox.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+      VerticalPanel.Children.Add(MainGroupBox);
+
+      GridControl InnerGrid = new GridControl();
+      ColumnDefinition ColOne = new ColumnDefinition();
+      ColOne.Width = new GridLength(0, GridUnitType.Auto);
+      InnerGrid.ColumnDefinitions.Add(ColOne);
+      RowDefinition RowOne = new RowDefinition();
+      RowOne.Height = new GridLength(0, GridUnitType.Auto);
+      InnerGrid.RowDefinitions.Add(RowOne);
+      RowDefinition RowTwo = new RowDefinition();
+      RowTwo.Height = new GridLength(0, GridUnitType.Auto);
+      InnerGrid.RowDefinitions.Add(RowTwo);
+      MainGroupBox.Content = InnerGrid;
 
       TextBlock InfoText = new TextBlock();
       InfoText.TextWrapping = TextWrapping.Wrap;
-      InfoText.Text = $"Create a friendly account name for this user . When you hit '{MyGovButtonText}' you will be sent to the MyGov authentication page. If the authentication is successful your new account will be save for use.";
+      InfoText.Text = $"Create a friendly account name for this user. \nHit the '{MyGovButtonText}' button and you will be sent to the MyGov authentication page. \nIf you authentication is successful your new account will be save for use.";
       InfoText.FontSize = 14;
       InfoText.Margin = new Thickness(5);
-      InfoTextBoarder.Child = InfoText;
+      Grid.SetColumn(InfoText, 0);
+      Grid.SetRow(InfoText, 0);
+      InnerGrid.Children.Add(InfoText);
 
       StackPanel PanelHorizontalControls = new StackPanel();
       PanelHorizontalControls.Orientation = Orientation.Horizontal;
-      PanelAddUser.Children.Add(PanelHorizontalControls);
+      PanelHorizontalControls.Margin = new Thickness(0, 60, 0, 60);
+      Grid.SetColumn(PanelHorizontalControls, 0);
+      Grid.SetRow(PanelHorizontalControls, 1);
+      InnerGrid.Children.Add(PanelHorizontalControls);
 
       Label LabelUsername = new Label();
-      LabelUsername.Content = "Account name:";
+      LabelUsername.Content = "User Account name:";
       TextBox TextBoxUsername = new TextBox();
       TextBoxUsername.Margin = new Thickness(3);
-      TextBoxUsername.Width = 150;
+      TextBoxUsername.Width = 250;
+      TextBoxUsername.MaxLength = 40;
       TextBoxUsername.TextChanged += TextBoxUsername_TextChanged;
       PanelHorizontalControls.Children.Add(LabelUsername);
       PanelHorizontalControls.Children.Add(TextBoxUsername);
-
-      Grid.SetRow(PanelAddUser, 1);
-      Grid.SetColumn(PanelAddUser, 2);
 
       Button MyGovBut = new Button();
       MyGovBut.Content = MyGovButtonText;
@@ -298,7 +327,7 @@ namespace MyHRMobile.FhirGatewayTool
       PanelHorizontalControls.Children.Add(CancelAddUserBut);
 
 
-      AddRightPanel(PanelAddUser);
+      RightPanelAdd(OuterDockPanel);
     }
 
     private void TextBoxUsername_TextChanged(object sender, TextChangedEventArgs e)
@@ -329,7 +358,7 @@ namespace MyHRMobile.FhirGatewayTool
     {
       if (UiService.ApplicationStore.UserList.SingleOrDefault(x => x.Username == UiService.CurrectUserAccount.Username) != null)
       {
-        MessageBox.Show("This Username already exists, must enter a new Username.", "Error", MessageBoxButton.OK);
+        MessageBox.Show("This User Account name already exists, must enter a new name.", "Error", MessageBoxButton.OK);
       }
       else
       {
@@ -338,14 +367,12 @@ namespace MyHRMobile.FhirGatewayTool
         Grid.SetRow(MyGovWeb, 1);
         Grid.SetColumn(MyGovWeb, 2);
         MyGovWeb.Navigate(new Uri("https://apinams.ehealthvendortest.health.gov.au/api/oauth/authorize/login?client_id=28198d27-c475-4695-83d3-1f1f8256e01b&response_type=code&redirect_uri=https://localhost/oauth_callback&scope=https://localhost:8090/pcehr+offline_access"));
-        AddRightPanel(MyGovWeb);
+        RightPanelAdd(MyGovWeb);
       }
     }
 
     private void Button_Click_GetRecordListTest(object sender, RoutedEventArgs e)
     {
-
-
       ICSharpCode.AvalonEdit.TextEditor TextEditor = new ICSharpCode.AvalonEdit.TextEditor();
       TextEditor.SetSyntaxType(AvalonEditSyntaxTypes.Xml);
       TextEditor.WordWrap = false;
@@ -386,7 +413,7 @@ namespace MyHRMobile.FhirGatewayTool
       RightGrid.Children.Add(TextEditor);
       //DropRightPanel();
       // SetupRightPanel();
-      AddRightPanel(RightGrid);
+      RightPanelAdd(RightGrid);
 
     }
 

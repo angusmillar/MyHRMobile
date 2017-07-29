@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\PropertyLiteralAttribute.cs" />
+    <Compile Include="Extentions\FhirPathExtentions.cs" />
     <Compile Include="Extentions\ViewModelExtentions.cs" />
     <Compile Include="Extentions\XmlExtentions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

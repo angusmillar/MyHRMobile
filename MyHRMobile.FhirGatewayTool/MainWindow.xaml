@@ -16,10 +16,11 @@
                      ShowCustomGridLines="True" 
                      GridLineBrush="DarkGreen"  
                      GridLineThickness="3" 
-                     Margin="5">
+                     Margin="0">
 
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="305" />
+      <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
     <Grid.RowDefinitions>
@@ -33,7 +34,7 @@
       <local:GridControl x:Name="LeftGrid" 
                          ShowCustomGridLines="True" 
                          GridLineBrush="Purple" 
-                         GridLineThickness="0" 
+                         GridLineThickness="1" 
                          Margin="0" >
         <Grid.RowDefinitions>
           <RowDefinition Height="auto" />
@@ -50,8 +51,8 @@
               <Label Content="Select an Account"></Label>
               <ComboBox Name="ComboBoxAccount" 
                       ItemsSource="{Binding UserAccountViewList}" 
-                      SelectedValue="{Binding CurrentUserAccount}"                       
-                      >
+                      SelectedValue="{Binding CurrentUserAccount}"
+                        >
               </ComboBox>
             </StackPanel>
           </GroupBox>
@@ -76,6 +77,35 @@
               <Label Content="{Binding CurrentUserAccount.RefreshExpiresString, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="2"></Label>
               <Button Content="GetRecordlistTest" Click="Button_Click_GetRecordListTest" Grid.Column="0" Grid.Row="4"></Button>
             </Grid>
+          </GroupBox>
+          <GroupBox Header="Accessible My Health Records" HorizontalContentAlignment="Center" BorderBrush="DarkGray" BorderThickness="1" Margin="2">
+            <StackPanel  Margin="5">
+              <ListBox Name="ListBoxRecords" Height="320" ItemsSource="{Binding CurrentUserAccount.UserAccountRecordList}">
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <StackPanel>
+                      <local:GridControl 
+                     ShowCustomGridLines="True" 
+                     GridLineBrush="Red"  
+                     GridLineThickness="1" 
+                     Margin="1">
+
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                          <RowDefinition Height="*" />
+                          <RowDefinition Height="*" />
+                          <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Label Content="aaa" Grid.Row="0"></Label>
+                      </local:GridControl>
+                    </StackPanel>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </StackPanel>
           </GroupBox>
         </StackPanel>
       </local:GridControl>

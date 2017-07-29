@@ -45,7 +45,7 @@ namespace MyHRMobile.API_V1_0_0_hotfix
       return new TokenResponse(response.StatusCode, response.Content.ReadAsStringAsync().Result);
     }
 
-    public TokenResponse GetRefreashToken(RefreshTokenRequest RefreshTokenRequest)
+    public TokenResponse GetRefreshToken(RefreshTokenRequest RefreshTokenRequest)
     {
       string RequestAccessTokenQuery = "api/oauth/token";
       _Client = new Client();

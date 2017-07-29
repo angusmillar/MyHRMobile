@@ -67,6 +67,56 @@ namespace MyHRMobile.FhirGatewayTool
       }
     }
 
+    public bool GetRefeashToken(ViewModel.UserAccountView ViewCurrentUserAccount)
+    {
+      //If the Access token expires in 1 hour get a new one.
+      if (ViewCurrentUserAccount.AccessExpires < DateTime.Now.AddHours(1))
+      {
+        if (!string.IsNullOrWhiteSpace(ViewCurrentUserAccount.RefreshToken))
+        {
+          FhirApi FhirApi = new FhirApi(FhirGatewayEndpoint);
+          var RefreshTokenRequest = new RefreshTokenRequest();
+          RefreshTokenRequest.Client_id = ApplicationStore.App_id;
+          RefreshTokenRequest.Client_secret = ApplicationStore.App_secret;
+          RefreshTokenRequest.RefreshToken = ViewCurrentUserAccount.RefreshToken;
+
+          TokenResponse TokenResponse = FhirApi.GetRefreshToken(RefreshTokenRequest);
+          if (TokenResponse.StatusCode == System.Net.HttpStatusCode.OK)
+          {
+            ViewCurrentUserAccount.AccessExpires = TokenResponse.AccessExpires;
+            ViewCurrentUserAccount.AccessToken = TokenResponse.AccessToken;
+            ViewCurrentUserAccount.RefreshExpires = TokenResponse.RefreshExpires;
+            ViewCurrentUserAccount.RefreshToken = TokenResponse.RefreshToken;
+            ViewCurrentUserAccount.Scope = TokenResponse.Scope;
+            if (ApplicationStore.UserList.SingleOrDefault(x => x.Username == ViewCurrentUserAccount.Username) != null)
+            {
+              var TargetAccount = ApplicationStore.UserList.SingleOrDefault(x => x.Username == ViewCurrentUserAccount.Username);
+              TargetAccount.AccessExpires = ViewCurrentUserAccount.AccessExpires;
+              TargetAccount.AccessToken = ViewCurrentUserAccount.AccessToken;
+              TargetAccount.RefreshExpires = ViewCurrentUserAccount.RefreshExpires;
+              TargetAccount.RefreshToken = ViewCurrentUserAccount.RefreshToken;
+              TargetAccount.Scope = ViewCurrentUserAccount.Scope;
+              SaveApplicationStore();
+            }
+            return true;
+          }
+          else
+          {
+            if (TokenResponse.ErrorResponse != null)
+              this.ErrorMessage = $"Refresh Token request failed with message: Http Status: {TokenResponse.StatusCode.ToString()}, Error: {TokenResponse.ErrorResponse.Error}, ErrorMessage: {TokenResponse.ErrorResponse.Description}";
+            else
+              this.ErrorMessage = $"Refresh Token request failed with no error message returned message, http status was: {TokenResponse.StatusCode.ToString()}";
+            return false;
+          }
+        }
+        else
+        {
+          throw new FormatException($"No CurrectUserAccount.AuthorisationCode found for access token request.");
+        }
+      }
+      return true;
+    }
+
     public void UpdateView(ViewModel.Presenter Presenter)
     {
       Presenter.Client_id = ApplicationStore.App_id;
@@ -114,6 +164,15 @@ namespace MyHRMobile.FhirGatewayTool
       if (RecordListResponse.StatusCode == System.Net.HttpStatusCode.OK)
       {
         Presenter.TextEditorRight = RecordListResponse.Body;
+        Presenter.CurrentUserAccount.UserAccountRecordList = new System.Collections.ObjectModel.ObservableCollection<ViewModel.UserAccountRecord>();
+        foreach (var Person in RecordListResponse.ApiRelatedPersonList)
+        {
+          var RecordItem = new ViewModel.UserAccountRecord();
+          RecordItem.Family = Person.Family;
+          RecordItem.Given = Person.Given;
+          RecordItem.Ihi = Person.Ihi;
+          Presenter.CurrentUserAccount.UserAccountRecordList.Add(RecordItem);
+        }
         return true;
       }
       else

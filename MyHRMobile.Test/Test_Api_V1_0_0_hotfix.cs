@@ -55,7 +55,7 @@ namespace MyHRMobile.Test
       FhirApi Api = new FhirApi(FhirGatewayEndpoint);
 
       //Act
-      TokenResponse TokenResponse = Api.GetRefreashToken(RefreshTokenRequest);
+      TokenResponse TokenResponse = Api.GetRefreshToken(RefreshTokenRequest);
 
       //Assert
       Assert.Equal(TokenResponse.StatusCode, System.Net.HttpStatusCode.OK);
