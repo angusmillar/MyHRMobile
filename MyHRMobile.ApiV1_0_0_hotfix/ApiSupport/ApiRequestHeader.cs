@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MyHRMobile.API_V1_0_0_hotfix.ApiSupport
+namespace MyHRMobile.ApiV1_0_0_hotfix.ApiSupport
 {
   public class ApiRequestHeader
   {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using MyHRMobile.Rest;
 using System.Net.Http;
-using MyHRMobile.API_V1_0_0_hotfix.ApiSupport;
+using MyHRMobile.ApiV1_0_0_hotfix.ApiSupport;
 
-namespace MyHRMobile.API_V1_0_0_hotfix
+namespace MyHRMobile.ApiV1_0_0_hotfix
 {
   public class FhirApi
   {
@@ -63,7 +63,7 @@ namespace MyHRMobile.API_V1_0_0_hotfix
 
       string GetRecordListQuery = "fhir/v1.0.0/RelatedPerson";
       if (!string.IsNullOrEmpty(Ihi))
-        GetRecordListQuery = $"{GetRecordListQuery}?id={Ihi}&_format={GetFormatString(Format)}";
+        GetRecordListQuery = $"{GetRecordListQuery}/{Ihi}?_format={GetFormatString(Format)}";
       else
         GetRecordListQuery = $"{GetRecordListQuery}?_format={GetFormatString(Format)}";
 
@@ -71,6 +71,28 @@ namespace MyHRMobile.API_V1_0_0_hotfix
       _Client.Endpoint = ServiceEndpoint.OriginalString;
       HttpResponseMessage response = _Client.Get(GetRecordListQuery, this.ApiRequestHeader.Authorization, this.ApiRequestHeader.AppId, this.ApiRequestHeader.AppVersion).Result;
       return new RecordListResponse(response.StatusCode, response.Content.ReadAsStringAsync().Result, Format);
+    }
+
+    public PatientDetailsResponse GetPatientDetails(string Ihi = "")
+    {
+      if (ApiRequestHeader == null)
+        throw new NullReferenceException("ApiRequestHeader can not be null");
+
+      string GetRecordListQuery = "fhir/v1.0.0/Patient";
+      if (!string.IsNullOrEmpty(Ihi))
+      {
+        //Dumb, not ?_id=ihi but rather Patient/ihi?_format=
+        GetRecordListQuery = $"{GetRecordListQuery}/{Ihi}?_format={GetFormatString(Format)}";
+      }
+      else
+      {
+        GetRecordListQuery = $"{GetRecordListQuery}?_format={GetFormatString(Format)}";
+      }
+
+      _Client = new Client();
+      _Client.Endpoint = ServiceEndpoint.OriginalString;
+      HttpResponseMessage response = _Client.Get(GetRecordListQuery, this.ApiRequestHeader.Authorization, this.ApiRequestHeader.AppId, this.ApiRequestHeader.AppVersion).Result;
+      return new PatientDetailsResponse(response.StatusCode, response.Content.ReadAsStringAsync().Result, Format);
     }
   }
 }

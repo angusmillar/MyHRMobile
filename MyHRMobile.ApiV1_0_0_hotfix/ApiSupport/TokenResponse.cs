@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json;
 
-namespace MyHRMobile.API_V1_0_0_hotfix.ApiSupport
+namespace MyHRMobile.ApiV1_0_0_hotfix.ApiSupport
 {
   public class TokenResponse : ApiResponseBase
   {

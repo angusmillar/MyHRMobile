@@ -1,7 +1,7 @@
 ﻿using System;
 using Xunit;
-using MyHRMobile.API_V1_0_0_hotfix;
-using MyHRMobile.API_V1_0_0_hotfix.ApiSupport;
+using MyHRMobile.ApiV1_0_0_hotfix;
+using MyHRMobile.ApiV1_0_0_hotfix.ApiSupport;
 
 
 namespace MyHRMobile.Test

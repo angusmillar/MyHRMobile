@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace MyHRMobile.API_V1_0_0_hotfix.ApiSupport
+namespace MyHRMobile.ApiV1_0_0_hotfix.ApiSupport
 {
   public class ErrorResponse
   {

@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using MyHRMobile.FhirGatewayTool.DataStore;
 using System.IO;
-using MyHRMobile.API_V1_0_0_hotfix;
-using MyHRMobile.API_V1_0_0_hotfix.ApiSupport;
+using MyHRMobile.ApiV1_0_0_hotfix;
+using MyHRMobile.ApiV1_0_0_hotfix.ApiSupport;
 
 namespace MyHRMobile.FhirGatewayTool
 {
@@ -153,6 +153,17 @@ namespace MyHRMobile.FhirGatewayTool
       this.CurrectUserAccount.Username = UserAccountView.Username;
     }
 
+    public bool GetPatientDetails(ViewModel.Presenter Presenter)
+    {
+      FhirApi FhirApi = new FhirApi(FhirGatewayEndpoint);
+      ApiRequestHeader ApiRequestHeader = new ApiRequestHeader(Presenter.CurrentUserAccount.AccessToken, this.ApplicationStore.App_id, this.ApplicationStore.App_Version);
+
+      FhirApi.ApiRequestHeader = ApiRequestHeader;
+
+      PatientDetailsResponse PatientDetailsResponse = FhirApi.GetPatientDetails(Presenter.CurrentUserAccount.SelectedUserAccountRecord.Ihi);
+      return true;
+    }
+
     public bool GetRecordList(ViewModel.UserAccountView UserAccountView, ViewModel.Presenter Presenter)
     {
       FhirApi FhirApi = new FhirApi(FhirGatewayEndpoint);
@@ -173,6 +184,10 @@ namespace MyHRMobile.FhirGatewayTool
           RecordItem.Ihi = Person.Ihi;
           Presenter.CurrentUserAccount.UserAccountRecordList.Add(RecordItem);
         }
+        if (Presenter.CurrentUserAccount != null && Presenter.CurrentUserAccount.UserAccountRecordList != null && Presenter.CurrentUserAccount.UserAccountRecordList.Count > 0)
+        {
+          Presenter.CurrentUserAccount.SelectedUserAccountRecord = Presenter.CurrentUserAccount.UserAccountRecordList[0];
+        }
         return true;
       }
       else
@@ -189,6 +204,8 @@ namespace MyHRMobile.FhirGatewayTool
         }
       }
     }
+
+
 
     public void ResetApplicationStore()
     {

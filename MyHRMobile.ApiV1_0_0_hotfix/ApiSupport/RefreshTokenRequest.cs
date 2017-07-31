@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MyHRMobile.Common.Attributes;
 using MyHRMobile.Common.Utility;
 
-namespace MyHRMobile.API_V1_0_0_hotfix.ApiSupport
+namespace MyHRMobile.ApiV1_0_0_hotfix.ApiSupport
 {
   public class RefreshTokenRequest : TokenRequestBase
   {

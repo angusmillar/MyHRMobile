@@ -36,8 +36,14 @@ namespace MyHRMobile.FhirGatewayTool
 
       Presenter = new ViewModel.Presenter();
       UiService = new UiService();
+      Presenter.MainGrid = GridMain;
       Presenter.UiService = UiService;
+
       DataContext = Presenter;
+      if (Presenter.CurrentUserAccount != null)
+      {
+        Presenter.LoadRecordList(null);
+      }
     }
 
 
@@ -77,7 +83,6 @@ namespace MyHRMobile.FhirGatewayTool
               ComboBoxAccount.SelectedItem = UiService.ApplicationStore.UserList.SingleOrDefault(x => x.Username == UiService.CurrectUserAccount.Username);
               DropRightPanel();
               ReportMyGovLoginOutcome(true);
-
             }
           }
           else
@@ -255,6 +260,7 @@ namespace MyHRMobile.FhirGatewayTool
 
     private void Button_Click_AddUser(object sender, RoutedEventArgs e)
     {
+
       UiService.CurrectUserAccount = new DataStore.UserAccount();
 
       string MyGovButtonText = "Save & MyGov Login";
@@ -309,7 +315,6 @@ namespace MyHRMobile.FhirGatewayTool
       TextBoxUsername.Margin = new Thickness(3);
       TextBoxUsername.Width = 250;
       TextBoxUsername.MaxLength = 40;
-      TextBoxUsername.TextChanged += TextBoxUsername_TextChanged;
       PanelHorizontalControls.Children.Add(LabelUsername);
       PanelHorizontalControls.Children.Add(TextBoxUsername);
 
@@ -328,25 +333,6 @@ namespace MyHRMobile.FhirGatewayTool
 
 
       RightPanelAdd(OuterDockPanel);
-    }
-
-    private void TextBoxUsername_TextChanged(object sender, TextChangedEventArgs e)
-    {
-      if (UiService.CurrectUserAccount != null)
-      {
-        if (e.Source is TextBox TextBox)
-        {
-          UiService.CurrectUserAccount.Username = TextBox.Text;
-        }
-        else
-        {
-          throw new Exception("Can not cast to TextBlock on event for username text change");
-        }
-      }
-      else
-      {
-        throw new Exception("Username Text box event, UiService.CurrectUserAccount is null");
-      }
     }
 
     private void CancelAddUserBut_Click(object sender, RoutedEventArgs e)
@@ -371,51 +357,10 @@ namespace MyHRMobile.FhirGatewayTool
       }
     }
 
-    private void Button_Click_GetRecordListTest(object sender, RoutedEventArgs e)
-    {
-      ICSharpCode.AvalonEdit.TextEditor TextEditor = new ICSharpCode.AvalonEdit.TextEditor();
-      TextEditor.SetSyntaxType(AvalonEditSyntaxTypes.Xml);
-      TextEditor.WordWrap = false;
-      TextEditor.ShowLineNumbers = true;
-      TextEditor.FontFamily = new FontFamily("Consolas");
-      TextEditor.FontSize = 12;
-      ExtentionAvalonEdit.AvalonEditContextMenu(TextEditor);
-
-      if (UiService.GetRecordList(Presenter.CurrentUserAccount, Presenter))
-      {
-
-        TextEditor.Text = MyHRMobile.Common.Utility.XmlTool.BeautifyXML(Presenter.TextEditorRight);
-      }
-      else
-      {
-        TextEditor.Text = Presenter.TextEditorRight;
-      }
-
-      Grid RightGrid = new Grid();
-      ColumnDefinition ColumnOne = new ColumnDefinition();
-      //ColumnOne.Width = new GridLength(0, GridUnitType.Auto);
-      RightGrid.ColumnDefinitions.Add(ColumnOne);
-
-      RowDefinition RowOne = new RowDefinition();
-      //RowOne.Height = new GridLength(0, GridUnitType.Auto);
-      RightGrid.RowDefinitions.Add(RowOne);
-
-      RowDefinition RowTwo = new RowDefinition();
-      //RowTwo.Height = new GridLength(10);
-      RightGrid.RowDefinitions.Add(RowTwo);
-
-      Grid.SetColumn(TextEditor, 0);
-      Grid.SetRowSpan(TextEditor, 2);
-
-      Grid.SetColumn(RightGrid, 1);
-      Grid.SetRow(RightGrid, 0);
-
-      RightGrid.Children.Add(TextEditor);
-      //DropRightPanel();
-      // SetupRightPanel();
-      RightPanelAdd(RightGrid);
-
-    }
+    //private void Button_Click_GetRecordListTest(object sender, RoutedEventArgs e)
+    //{
+    //  Presenter.LoadGetRecordList(GridMain);
+    //}
 
 
   }

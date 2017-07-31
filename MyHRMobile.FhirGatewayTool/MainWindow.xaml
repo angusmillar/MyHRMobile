@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyHRMobile.FhirGatewayTool"
         xmlns:MyView="clr-namespace:MyHRMobile.FhirGatewayTool.ViewModel"        
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Title="Fhir Gateway Tool" MinHeight="650" MinWidth="1000" Height="650" Width="1000">
 
@@ -15,7 +16,7 @@
   <local:GridControl x:Name="GridMain" 
                      ShowCustomGridLines="True" 
                      GridLineBrush="DarkGreen"  
-                     GridLineThickness="3" 
+                     GridLineThickness="0" 
                      Margin="0">
 
     <Grid.ColumnDefinitions>
@@ -34,7 +35,7 @@
       <local:GridControl x:Name="LeftGrid" 
                          ShowCustomGridLines="True" 
                          GridLineBrush="Purple" 
-                         GridLineThickness="1" 
+                         GridLineThickness="0" 
                          Margin="0" >
         <Grid.RowDefinitions>
           <RowDefinition Height="auto" />
@@ -75,33 +76,51 @@
               <Label Content="{Binding CurrentUserAccount.AccessExpiresString, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="1"></Label>
               <Label Content="Refresh token expiry" FontWeight="DemiBold" Grid.Column="0" Grid.Row="2"></Label>
               <Label Content="{Binding CurrentUserAccount.RefreshExpiresString, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="2"></Label>
-              <Button Content="GetRecordlistTest" Click="Button_Click_GetRecordListTest" Grid.Column="0" Grid.Row="4"></Button>
             </Grid>
           </GroupBox>
           <GroupBox Header="Accessible My Health Records" HorizontalContentAlignment="Center" BorderBrush="DarkGray" BorderThickness="1" Margin="2">
             <StackPanel  Margin="5">
-              <ListBox Name="ListBoxRecords" Height="320" ItemsSource="{Binding CurrentUserAccount.UserAccountRecordList}">
+              <ListBox Name="ListBoxRecords" Height="320" 
+                       ItemsSource="{Binding CurrentUserAccount.UserAccountRecordList}"
+                        
+                       >
+                <!--SelectedItem="{Binding CurrentUserAccount.SelectedUserAccountRecord, Mode=TwoWay}"-->
+
+
+                <i:Interaction.Triggers>
+                  <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding SelectedRecordCommand}" CommandParameter="{Binding ElementName=ListBoxRecords,Path=SelectedItem}"/>
+                  </i:EventTrigger>
+                </i:Interaction.Triggers>
+
                 <ListBox.ItemTemplate>
                   <DataTemplate>
-                    <StackPanel>
-                      <local:GridControl 
-                     ShowCustomGridLines="True" 
-                     GridLineBrush="Red"  
-                     GridLineThickness="1" 
-                     Margin="1">
-
+                    <local:GridControl
+                         ShowCustomGridLines="True" 
+                         GridLineBrush="Purple" 
+                         GridLineThickness="0" 
+                         Margin="1" >
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                      </Grid.ColumnDefinitions>
+                      <Grid>
                         <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="auto" />
+                          <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
                         <Grid.RowDefinitions>
-                          <RowDefinition Height="*" />
-                          <RowDefinition Height="*" />
-                          <RowDefinition Height="*" />
+                          <RowDefinition/>
+                          <RowDefinition/>
+                          <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <Label Content="aaa" Grid.Row="0"></Label>
-                      </local:GridControl>
-                    </StackPanel>
+                        <TextBlock Text="Name: " FontWeight="DemiBold" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0"/>
+                        <TextBlock Text="{Binding Path=FormatedName}" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" />
+                        <TextBlock Text="IHI: " FontWeight="DemiBold" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0"/>
+                        <TextBlock Text="{Binding Path=FormatedIHI}" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" />
+                        <TextBlock Text="___________________________________________________________________________________________________________________" FontSize="5" Foreground="LightGray" Grid.Row="2" Grid.ColumnSpan="2" />
+                      </Grid>
+                    </local:GridControl>
                   </DataTemplate>
                 </ListBox.ItemTemplate>
               </ListBox>
