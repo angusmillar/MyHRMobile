@@ -44,16 +44,29 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
       }
     }
 
-    private ICommand _AddUserAccountCommand;
-    public ICommand AddUserAccountCommand
+    private ICommand _AddAccountCommand;
+    public ICommand AddAccountCommand
     {
       get
       {
-        return _AddUserAccountCommand;
+        return _AddAccountCommand;
       }
       set
       {
-        _AddUserAccountCommand = value;
+        _AddAccountCommand = value;
+      }
+    }
+
+    private ICommand _DeleteAccountCommand;
+    public ICommand DeleteAccountCommand
+    {
+      get
+      {
+        return _DeleteAccountCommand;
+      }
+      set
+      {
+        _DeleteAccountCommand = value;
       }
     }
 
@@ -158,7 +171,8 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
     {
       LoadRecordListCommand = new RelayCommand(LoadRecordList, param => this._CanExecute);
       SelectedRecordCommand = new RelayCommand(LoadSelectedRecord, param => this._CanExecute);
-      AddUserAccountCommand = new RelayCommand(PresentAddUserAccount, param => this._CanExecute);
+      AddAccountCommand = new RelayCommand(PresentAddUserAccount, param => this._CanExecute);
+      DeleteAccountCommand = new RelayCommand(DeleteUserAccount, param => this._CanExecute);
       MyGovWebBrowserCommand = new RelayCommand(PresentMyGovWebBrowser, param => this._CanExecute);
       MyGovWebBrowserLoadCompleteCommand = new RelayCommand(MyGovWebBrowserLoadComplete, param => this._CanExecute);
       this._UserAccountViewList = new ObservableCollection<UserAccountView>();
@@ -281,113 +295,6 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
       Grid.SetColumn(MyGovAuthenticationOutcomeView, 2);
       DropRightPanel();
       RightPanelAdd(MyGovAuthenticationOutcomeView);
-
-      //DockPanel OuterDockPanel = new DockPanel();
-      //Grid.SetRow(OuterDockPanel, 1);
-      //Grid.SetColumn(OuterDockPanel, 2);
-
-      //StackPanel VerticalPanel = new StackPanel();
-      //VerticalPanel.Orientation = Orientation.Vertical;
-      //VerticalPanel.Margin = new Thickness(5);
-      //VerticalPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
-      //OuterDockPanel.Children.Add(VerticalPanel);
-
-      //GroupBox MainGroupBox = new GroupBox();
-      //MainGroupBox.Header = "Create a User Account";
-      //MainGroupBox.HorizontalContentAlignment = HorizontalAlignment.Stretch;
-      //VerticalPanel.Children.Add(MainGroupBox);
-
-      //GridControl InnerGrid = new GridControl();
-      //ColumnDefinition ColOne = new ColumnDefinition();
-      //ColOne.Width = new GridLength(0, GridUnitType.Auto);
-      //InnerGrid.ColumnDefinitions.Add(ColOne);
-      //RowDefinition RowOne = new RowDefinition();
-      //RowOne.Height = new GridLength(0, GridUnitType.Auto);
-      //InnerGrid.RowDefinitions.Add(RowOne);
-      //RowDefinition RowTwo = new RowDefinition();
-      //RowTwo.Height = new GridLength(0, GridUnitType.Auto);
-      //InnerGrid.RowDefinitions.Add(RowTwo);
-      //MainGroupBox.Content = InnerGrid;
-
-      //if (IsSuccessFull)
-      //{
-      //  TextBlock InfoTextSuccess = new TextBlock();
-      //  InfoTextSuccess.TextWrapping = TextWrapping.Wrap;
-      //  InfoTextSuccess.Text = $"You MyGov authentication was successfully.";
-      //  InfoTextSuccess.FontSize = 24;
-      //  InfoTextSuccess.Foreground = Brushes.Green;
-      //  InfoTextSuccess.Margin = new Thickness(5);
-      //  Grid.SetColumn(InfoTextSuccess, 0);
-      //  Grid.SetRow(InfoTextSuccess, 0);
-      //  InnerGrid.Children.Add(InfoTextSuccess);
-
-      //  TextBlock InfoTextMessage = new TextBlock();
-      //  InfoTextMessage.TextWrapping = TextWrapping.Wrap;
-      //  InfoTextMessage.Text = $"You are now able to select you Account name from the drop down on the left.\nYour account will be remembered and authentication managed. ";
-      //  InfoTextMessage.Margin = new Thickness(5);
-      //  Grid.SetColumn(InfoTextMessage, 0);
-      //  Grid.SetRow(InfoTextMessage, 1);
-      //  InnerGrid.Children.Add(InfoTextMessage);
-      //}
-      //else
-      //{
-      //  TextBlock InfoTextSuccess = new TextBlock();
-      //  InfoTextSuccess.TextWrapping = TextWrapping.Wrap;
-      //  InfoTextSuccess.Text = $"You MyGov authentication was unsuccessfully.";
-      //  InfoTextSuccess.FontSize = 24;
-      //  InfoTextSuccess.Foreground = Brushes.Maroon;
-      //  InfoTextSuccess.Margin = new Thickness(5);
-      //  Grid.SetColumn(InfoTextSuccess, 0);
-      //  Grid.SetRow(InfoTextSuccess, 0);
-      //  InnerGrid.Children.Add(InfoTextSuccess);
-
-      //  StackPanel HozStackOne = new StackPanel();
-      //  HozStackOne.Orientation = Orientation.Horizontal;
-      //  Grid.SetColumn(HozStackOne, 0);
-      //  Grid.SetRow(HozStackOne, 1);
-      //  InnerGrid.Children.Add(HozStackOne);
-
-      //  Label LabelErrorCode = new Label();
-      //  LabelErrorCode.Content = "MyGov Error Code:";
-      //  LabelErrorCode.FontWeight = FontWeights.DemiBold;
-
-      //  HozStackOne.Children.Add(LabelErrorCode);
-
-      //  TextBlock InfoTextMessage = new TextBlock();
-      //  InfoTextMessage.TextWrapping = TextWrapping.Wrap;
-      //  Binding binding = new Binding();
-      //  binding.Path = new PropertyPath("MyGovError");
-      //  binding.Source = Presenter;  // view model?
-      //  BindingOperations.SetBinding(InfoTextMessage, TextBlock.TextProperty, binding);
-      //  InfoTextMessage.Margin = new Thickness(5);
-      //  HozStackOne.Children.Add(InfoTextMessage);
-
-      //  RowDefinition RowThree = new RowDefinition();
-      //  RowThree.Height = new GridLength(0, GridUnitType.Auto);
-      //  InnerGrid.RowDefinitions.Add(RowThree);
-
-      //  StackPanel HozStackTwo = new StackPanel();
-      //  HozStackTwo.Orientation = Orientation.Horizontal;
-      //  Grid.SetColumn(HozStackTwo, 0);
-      //  Grid.SetRow(HozStackTwo, 2);
-      //  InnerGrid.Children.Add(HozStackTwo);
-
-      //  Label LabelErrorDesc = new Label();
-      //  LabelErrorDesc.Content = "MyGov Error Description:";
-      //  LabelErrorDesc.FontWeight = FontWeights.DemiBold;
-      //  HozStackTwo.Children.Add(LabelErrorDesc);
-
-      //  TextBlock TextBlockErrDesc = new TextBlock();
-      //  TextBlockErrDesc.TextWrapping = TextWrapping.Wrap;
-      //  TextBlockErrDesc.Margin = new Thickness(5);
-      //  Binding binding2 = new Binding();
-      //  binding2.Path = new PropertyPath("MyGovErrorDescription");
-      //  binding2.Source = Presenter;  // view model?
-      //  BindingOperations.SetBinding(TextBlockErrDesc, TextBlock.TextProperty, binding2);
-      //  HozStackTwo.Children.Add(TextBlockErrDesc);
-      //}
-
-      //RightPanelAdd(OuterDockPanel);
     }
 
     public void PresentMyGovWebBrowser(object obj)
@@ -418,14 +325,41 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
       RightPanelAdd(AddUserAccountView);
     }
 
+    public void DeleteUserAccount(object obj)
+    {
+      if (this.CurrentUserAccount != null)
+      {
+        if (MessageBox.Show($"Confirm deletion of Account: {this.CurrentUserAccount.Username}", "Account deletion confirmation", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+        {
+          string TempAccountDeletedName = this.CurrentUserAccount.Username;
+          var AccountToDelete = UiService.ApplicationStore.UserList.SingleOrDefault(x => x.Username.ToLower() == this.CurrentUserAccount.Username.ToLower());
+          if (AccountToDelete != null)
+          {
+            UiService.ApplicationStore.UserList.Remove(AccountToDelete);
+            UiService.CurrectUserAccount = null;
+            UiService.SaveApplicationStore();
+            DropRightPanel();
+            this.AddUserAccountViewList = ConvertToUserAccountViewList(UiService.ApplicationStore.UserList);
+            MessageBox.Show($"The Account named: {TempAccountDeletedName} was deleted.", "Account deletion success", MessageBoxButton.OK);
+          }
+          else
+          {
+            throw new NullReferenceException($"Could not locate account with name {this.CurrentUserAccount.Username.ToLower()} within the UiService.ApplicationStore.UserList");
+          }
+        }
+      }
+      else
+      {
+        MessageBox.Show("There is not Account selected to delete.", "No Account Selected", MessageBoxButton.OK);
+      }
+    }
+
     public void LoadSelectedRecord(object obj)
     {
       if (obj != null && obj is UserAccountRecord UserAccountRecord)
       {
         this._CurrentUserAccount.SelectedUserAccountRecord = UserAccountRecord;
-        string test = UserAccountRecord.FormatedName;
         UiService.GetPatientDetails(this);
-
       }
     }
 

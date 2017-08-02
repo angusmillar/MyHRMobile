@@ -50,7 +50,10 @@
         <StackPanel HorizontalAlignment="Center"  Orientation="Vertical" Grid.Column="0" Grid.Row="1" Width="302">
           <GroupBox Header="Account Management" HorizontalContentAlignment="Center" BorderBrush="DarkGray" BorderThickness="1" Margin="2">
             <StackPanel Margin="5">
-              <Button Content="New Account" Width="120" Command="{Binding Path=AddUserAccountCommand}" HorizontalAlignment="Left"/>
+              <StackPanel Orientation="Horizontal">
+                <Button Content="New Account" Width="120" Margin="10,0,0,0" Command="{Binding Path=AddAccountCommand}" HorizontalAlignment="Left"/>
+                <Button Content="Delete Account" Width="120" Margin="10,0,0,0" Command="{Binding Path=DeleteAccountCommand}" HorizontalAlignment="Left"/>
+              </StackPanel>
               <Label Content="Select an Account"></Label>
               <ComboBox Name="ComboBoxAccount" 
                       ItemsSource="{Binding UserAccountViewList}" 
