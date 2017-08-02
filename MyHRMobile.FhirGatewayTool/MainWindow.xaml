@@ -48,9 +48,9 @@
 
         </Grid.ColumnDefinitions>
         <StackPanel HorizontalAlignment="Center"  Orientation="Vertical" Grid.Column="0" Grid.Row="1" Width="302">
-          <GroupBox Header="User Account Management" HorizontalContentAlignment="Center" BorderBrush="DarkGray" BorderThickness="1" Margin="2">
+          <GroupBox Header="Account Management" HorizontalContentAlignment="Center" BorderBrush="DarkGray" BorderThickness="1" Margin="2">
             <StackPanel Margin="5">
-              <Button Content="New User Account" Width="120" Command="{Binding Path=AddUserAccountCommand}" HorizontalAlignment="Left"/>
+              <Button Content="New Account" Width="120" Command="{Binding Path=AddUserAccountCommand}" HorizontalAlignment="Left"/>
               <Label Content="Select an Account"></Label>
               <ComboBox Name="ComboBoxAccount" 
                       ItemsSource="{Binding UserAccountViewList}" 

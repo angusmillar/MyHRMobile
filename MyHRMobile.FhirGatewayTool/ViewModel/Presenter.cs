@@ -202,7 +202,8 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
             if (UiService.GetAccessToken())
             {
               this.AddUserAccountViewList = ConvertToUserAccountViewList(UiService.ApplicationStore.UserList);
-              this.CurrentUserAccount = ConvertToUserAccountView(UiService.ApplicationStore.UserList.SingleOrDefault(x => x.Username == UiService.CurrectUserAccount.Username));
+              //this.CurrentUserAccount = ConvertToUserAccountView(UiService.ApplicationStore.UserList.SingleOrDefault(x => x.Username == UiService.CurrectUserAccount.Username));
+
               DropRightPanel();
               ReportMyGovLoginOutcome(true);
             }
@@ -676,7 +677,7 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
         }
         else
         {
-          return $"{this.Family.ToUpper()}, {this.Given}";
+          return $"{this.Ihi}";
         }
       }
     }

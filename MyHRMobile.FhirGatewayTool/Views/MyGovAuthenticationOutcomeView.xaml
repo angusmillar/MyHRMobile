@@ -68,6 +68,14 @@
                      Text="{Binding Path=MyGovAuthenticationOutcomeViewModel.SuccessInfoMessage}">
           </TextBlock>
 
+          <StackPanel Grid.Column="0" Grid.Row="2" 
+                      Orientation="Horizontal"
+                      Visibility="{Binding Path=MyGovAuthenticationOutcomeViewModel.SuccessVisibility}"
+                      >
+            <Label FontWeight="DemiBold" Content="New Account:"/>
+            <TextBlock TextWrapping="Wrap" Text="{Binding Path=AddUserAccountViewModel.UserAccountNameText}" Margin="5"></TextBlock>
+          </StackPanel>
+
           <StackPanel Grid.Column="0" Grid.Row="1" 
                       Orientation="Horizontal"
                       Visibility="{Binding Path=MyGovAuthenticationOutcomeViewModel.UnSuccessfulVisibility}"
