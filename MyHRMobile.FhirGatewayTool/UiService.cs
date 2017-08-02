@@ -121,7 +121,7 @@ namespace MyHRMobile.FhirGatewayTool
     {
       Presenter.Client_id = ApplicationStore.App_id;
       Presenter.Client_secret = ApplicationStore.App_secret;
-      //Presenter.UserAccountViewList.Clear();
+
       foreach (var x in this.ApplicationStore.UserList)
       {
         var User = new ViewModel.UserAccountView()

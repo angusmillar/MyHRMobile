@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace MyHRMobile.FhirGatewayTool
+namespace MyHRMobile.FhirGatewayTool.CustomControl
 {
   public class GridControl : Grid
   {

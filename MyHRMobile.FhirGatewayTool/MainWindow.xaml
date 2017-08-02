@@ -4,16 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyHRMobile.FhirGatewayTool"
-        xmlns:MyView="clr-namespace:MyHRMobile.FhirGatewayTool.ViewModel"        
+        xmlns:CustomControl="clr-namespace:MyHRMobile.FhirGatewayTool.CustomControl"
+        xmlns:MyViewModel="clr-namespace:MyHRMobile.FhirGatewayTool.ViewModel"       
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Title="Fhir Gateway Tool" MinHeight="650" MinWidth="1000" Height="650" Width="1000">
 
   <Window.DataContext>
-    <MyView:Presenter/>
+    <MyViewModel:Presenter/>
   </Window.DataContext>
 
-  <local:GridControl x:Name="GridMain" 
+  <CustomControl:GridControl
+                     x:Name="GridMain" 
                      ShowCustomGridLines="True" 
                      GridLineBrush="DarkGreen"  
                      GridLineThickness="0" 
@@ -32,7 +34,7 @@
             Grid.Row="0" Grid.Column="0"
             VerticalAlignment="Stretch">
 
-      <local:GridControl x:Name="LeftGrid" 
+      <CustomControl:GridControl x:Name="LeftGrid" 
                          ShowCustomGridLines="True" 
                          GridLineBrush="Purple" 
                          GridLineThickness="0" 
@@ -48,7 +50,7 @@
         <StackPanel HorizontalAlignment="Center"  Orientation="Vertical" Grid.Column="0" Grid.Row="1" Width="302">
           <GroupBox Header="User Account Management" HorizontalContentAlignment="Center" BorderBrush="DarkGray" BorderThickness="1" Margin="2">
             <StackPanel Margin="5">
-              <Button Content="New User Account" Width="120" Click="Button_Click_AddUser" HorizontalAlignment="Left"/>
+              <Button Content="New User Account" Width="120" Command="{Binding Path=AddUserAccountCommand}" HorizontalAlignment="Left"/>
               <Label Content="Select an Account"></Label>
               <ComboBox Name="ComboBoxAccount" 
                       ItemsSource="{Binding UserAccountViewList}" 
@@ -95,7 +97,7 @@
 
                 <ListBox.ItemTemplate>
                   <DataTemplate>
-                    <local:GridControl
+                    <CustomControl:GridControl
                          ShowCustomGridLines="True" 
                          GridLineBrush="Purple" 
                          GridLineThickness="0" 
@@ -120,15 +122,15 @@
                         <TextBlock Text="{Binding Path=FormatedIHI}" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" />
                         <TextBlock Text="___________________________________________________________________________________________________________________" FontSize="5" Foreground="LightGray" Grid.Row="2" Grid.ColumnSpan="2" />
                       </Grid>
-                    </local:GridControl>
+                    </CustomControl:GridControl>
                   </DataTemplate>
                 </ListBox.ItemTemplate>
               </ListBox>
             </StackPanel>
           </GroupBox>
         </StackPanel>
-      </local:GridControl>
+      </CustomControl:GridControl>
     </Border>
-  </local:GridControl>
+  </CustomControl:GridControl>
 
 </Window>

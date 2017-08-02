@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MyHRMobile.FhirGatewayTool.Extensions;
+using MyHRMobile.FhirGatewayTool.CustomControl;
 
 namespace MyHRMobile.FhirGatewayTool
 {
@@ -40,10 +41,10 @@ namespace MyHRMobile.FhirGatewayTool
       Presenter.UiService = UiService;
 
       DataContext = Presenter;
-      if (Presenter.CurrentUserAccount != null)
-      {
-        Presenter.LoadRecordList(null);
-      }
+      //if (Presenter.CurrentUserAccount != null)
+      //{
+      //  Presenter.LoadRecordList(null);
+      //}
     }
 
 
@@ -260,79 +261,82 @@ namespace MyHRMobile.FhirGatewayTool
 
     private void Button_Click_AddUser(object sender, RoutedEventArgs e)
     {
+      //MyHRMobile.FhirGatewayTool.Views.AddUserAccountView AddUserAccountView = new Views.AddUserAccountView();
+      //Grid.SetRow(AddUserAccountView, 1);
+      //Grid.SetColumn(AddUserAccountView, 2);
+      //RightPanelAdd(AddUserAccountView);
+      //UiService.CurrectUserAccount = new DataStore.UserAccount();
 
-      UiService.CurrectUserAccount = new DataStore.UserAccount();
+      //string MyGovButtonText = "Save & MyGov Login";
 
-      string MyGovButtonText = "Save & MyGov Login";
+      //DockPanel OuterDockPanel = new DockPanel();
+      //Grid.SetRow(OuterDockPanel, 1);
+      //Grid.SetColumn(OuterDockPanel, 2);
 
-      DockPanel OuterDockPanel = new DockPanel();
-      Grid.SetRow(OuterDockPanel, 1);
-      Grid.SetColumn(OuterDockPanel, 2);
+      //StackPanel VerticalPanel = new StackPanel();
+      //VerticalPanel.Orientation = Orientation.Vertical;
+      //VerticalPanel.Margin = new Thickness(5);
+      ////VerticalPanel.HorizontalAlignment = HorizontalAlignment.Left;
+      //VerticalPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+      //OuterDockPanel.Children.Add(VerticalPanel);
 
-      StackPanel VerticalPanel = new StackPanel();
-      VerticalPanel.Orientation = Orientation.Vertical;
-      VerticalPanel.Margin = new Thickness(5);
-      //VerticalPanel.HorizontalAlignment = HorizontalAlignment.Left;
-      VerticalPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
-      OuterDockPanel.Children.Add(VerticalPanel);
+      //GroupBox MainGroupBox = new GroupBox();
+      //MainGroupBox.Header = "Create a User Account";
+      //MainGroupBox.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+      //VerticalPanel.Children.Add(MainGroupBox);
 
-      GroupBox MainGroupBox = new GroupBox();
-      MainGroupBox.Header = "Create a User Account";
-      MainGroupBox.HorizontalContentAlignment = HorizontalAlignment.Stretch;
-      VerticalPanel.Children.Add(MainGroupBox);
+      //GridControl InnerGrid = new GridControl();
+      //ColumnDefinition ColOne = new ColumnDefinition();
+      //ColOne.Width = new GridLength(0, GridUnitType.Auto);
+      //InnerGrid.ColumnDefinitions.Add(ColOne);
+      //RowDefinition RowOne = new RowDefinition();
+      //RowOne.Height = new GridLength(0, GridUnitType.Auto);
+      //InnerGrid.RowDefinitions.Add(RowOne);
+      //RowDefinition RowTwo = new RowDefinition();
+      //RowTwo.Height = new GridLength(0, GridUnitType.Auto);
+      //InnerGrid.RowDefinitions.Add(RowTwo);
+      //MainGroupBox.Content = InnerGrid;
 
-      GridControl InnerGrid = new GridControl();
-      ColumnDefinition ColOne = new ColumnDefinition();
-      ColOne.Width = new GridLength(0, GridUnitType.Auto);
-      InnerGrid.ColumnDefinitions.Add(ColOne);
-      RowDefinition RowOne = new RowDefinition();
-      RowOne.Height = new GridLength(0, GridUnitType.Auto);
-      InnerGrid.RowDefinitions.Add(RowOne);
-      RowDefinition RowTwo = new RowDefinition();
-      RowTwo.Height = new GridLength(0, GridUnitType.Auto);
-      InnerGrid.RowDefinitions.Add(RowTwo);
-      MainGroupBox.Content = InnerGrid;
+      //TextBlock InfoText = new TextBlock();
+      //InfoText.TextWrapping = TextWrapping.Wrap;
+      //InfoText.Text = $"Create a friendly account name for this user. \nHit the '{MyGovButtonText}' button and you will be sent to the MyGov authentication page. \nIf you authentication is successful your new account will be save for use.";
+      //InfoText.FontSize = 14;
+      //InfoText.Margin = new Thickness(5);
+      //Grid.SetColumn(InfoText, 0);
+      //Grid.SetRow(InfoText, 0);
+      //InnerGrid.Children.Add(InfoText);
 
-      TextBlock InfoText = new TextBlock();
-      InfoText.TextWrapping = TextWrapping.Wrap;
-      InfoText.Text = $"Create a friendly account name for this user. \nHit the '{MyGovButtonText}' button and you will be sent to the MyGov authentication page. \nIf you authentication is successful your new account will be save for use.";
-      InfoText.FontSize = 14;
-      InfoText.Margin = new Thickness(5);
-      Grid.SetColumn(InfoText, 0);
-      Grid.SetRow(InfoText, 0);
-      InnerGrid.Children.Add(InfoText);
+      //StackPanel PanelHorizontalControls = new StackPanel();
+      //PanelHorizontalControls.Orientation = Orientation.Horizontal;
+      //PanelHorizontalControls.Margin = new Thickness(0, 60, 0, 60);
+      //Grid.SetColumn(PanelHorizontalControls, 0);
+      //Grid.SetRow(PanelHorizontalControls, 1);
+      //InnerGrid.Children.Add(PanelHorizontalControls);
 
-      StackPanel PanelHorizontalControls = new StackPanel();
-      PanelHorizontalControls.Orientation = Orientation.Horizontal;
-      PanelHorizontalControls.Margin = new Thickness(0, 60, 0, 60);
-      Grid.SetColumn(PanelHorizontalControls, 0);
-      Grid.SetRow(PanelHorizontalControls, 1);
-      InnerGrid.Children.Add(PanelHorizontalControls);
+      //Label LabelUsername = new Label();
+      //LabelUsername.Content = "User Account name:";
+      //TextBox TextBoxUsername = new TextBox();
+      //TextBoxUsername.Margin = new Thickness(3);
+      //TextBoxUsername.Width = 250;
+      //TextBoxUsername.MaxLength = 40;
+      //PanelHorizontalControls.Children.Add(LabelUsername);
+      //PanelHorizontalControls.Children.Add(TextBoxUsername);
 
-      Label LabelUsername = new Label();
-      LabelUsername.Content = "User Account name:";
-      TextBox TextBoxUsername = new TextBox();
-      TextBoxUsername.Margin = new Thickness(3);
-      TextBoxUsername.Width = 250;
-      TextBoxUsername.MaxLength = 40;
-      PanelHorizontalControls.Children.Add(LabelUsername);
-      PanelHorizontalControls.Children.Add(TextBoxUsername);
-
-      Button MyGovBut = new Button();
-      MyGovBut.Content = MyGovButtonText;
-      MyGovBut.Margin = new Thickness(3);
-      MyGovBut.Click += MyGovBut_Click;
-      PanelHorizontalControls.Children.Add(MyGovBut);
-
-
-      Button CancelAddUserBut = new Button();
-      CancelAddUserBut.Content = "Cancel";
-      CancelAddUserBut.Margin = new Thickness(3);
-      CancelAddUserBut.Click += CancelAddUserBut_Click;
-      PanelHorizontalControls.Children.Add(CancelAddUserBut);
+      //Button MyGovBut = new Button();
+      //MyGovBut.Content = MyGovButtonText;
+      //MyGovBut.Margin = new Thickness(3);
+      //MyGovBut.Click += MyGovBut_Click;
+      //PanelHorizontalControls.Children.Add(MyGovBut);
 
 
-      RightPanelAdd(OuterDockPanel);
+      //Button CancelAddUserBut = new Button();
+      //CancelAddUserBut.Content = "Cancel";
+      //CancelAddUserBut.Margin = new Thickness(3);
+      //CancelAddUserBut.Click += CancelAddUserBut_Click;
+      //PanelHorizontalControls.Children.Add(CancelAddUserBut);
+
+
+      //RightPanelAdd(OuterDockPanel);
     }
 
     private void CancelAddUserBut_Click(object sender, RoutedEventArgs e)

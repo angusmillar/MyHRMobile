@@ -16,12 +16,8 @@ namespace MyHRMobile.FhirGatewayTool.DataStore
     public List<UserAccount> UserList { get; set; }
   }
 
-  public class UserAccount : INotifyPropertyChanged
+  public class UserAccount
   {
-    public override string ToString()
-    {
-      return Username;
-    }
     public string Username { get; set; }
     public string AuthorisationCode { get; set; }
     public string AccessToken { get; set; }
@@ -29,12 +25,5 @@ namespace MyHRMobile.FhirGatewayTool.DataStore
     public DateTime AccessExpires { get; set; }
     public DateTime RefreshExpires { get; set; }
     public string Scope { get; set; }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    private void NotifyPropertyChanged(String info)
-    {
-      PropertyChanged.Raise(this, info);
-    }
   }
 }
