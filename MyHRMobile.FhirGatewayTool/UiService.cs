@@ -8,6 +8,7 @@ using System.IO;
 using MyHRMobile.ApiV1_0_0_hotfix;
 using MyHRMobile.ApiV1_0_0_hotfix.ApiSupport;
 
+
 namespace MyHRMobile.FhirGatewayTool
 {
   public class UiService
@@ -153,15 +154,69 @@ namespace MyHRMobile.FhirGatewayTool
       this.CurrectUserAccount.Username = UserAccountView.Username;
     }
 
+    public void GetPbsItems(ViewModel.Presenter Presenter)
+    {
+      FhirApi FhirApi = new FhirApi(FhirGatewayEndpoint);
+      ApiRequestHeader ApiRequestHeader = new ApiRequestHeader(Presenter.CurrentUserAccount.AccessToken, this.ApplicationStore.App_id, this.ApplicationStore.App_Version);
+      FhirApi.ApiRequestHeader = ApiRequestHeader;
+      PbsItemsResponse PbsItemsResponse = FhirApi.GetPbsItems(Presenter.CurrentUserAccount.SelectedUserAccountRecord.Ihi, null, null);
+    }
+
+
     public bool GetPatientDetails(ViewModel.Presenter Presenter)
     {
       FhirApi FhirApi = new FhirApi(FhirGatewayEndpoint);
       ApiRequestHeader ApiRequestHeader = new ApiRequestHeader(Presenter.CurrentUserAccount.AccessToken, this.ApplicationStore.App_id, this.ApplicationStore.App_Version);
-
       FhirApi.ApiRequestHeader = ApiRequestHeader;
-
-      PatientDetailsResponse PatientDetailsResponse = FhirApi.GetPatientDetails(Presenter.CurrentUserAccount.SelectedUserAccountRecord.Ihi);
-      return true;
+      try
+      {
+        PatientDetailsResponse PatientDetailsResponse = FhirApi.GetPatientDetails(Presenter.CurrentUserAccount.SelectedUserAccountRecord.Ihi);
+        Presenter.PatientBanerViewModel = new ViewModel.PatientBanerViewModel();
+        if (PatientDetailsResponse.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+          if (PatientDetailsResponse.ApiPatient.Dob.HasValue)
+          {
+            Presenter.PatientBanerViewModel.Dob = PatientDetailsResponse.ApiPatient.Dob.Value.ToShortDateString();
+          }
+          else
+          {
+            Presenter.PatientBanerViewModel.Dob = "Unknown";
+          }
+          Presenter.PatientBanerViewModel.Family = PatientDetailsResponse.ApiPatient.Family;
+          Presenter.PatientBanerViewModel.Given = PatientDetailsResponse.ApiPatient.Given;
+          Presenter.PatientBanerViewModel.Sex = PatientDetailsResponse.ApiPatient.Sex;
+          Presenter.PatientBanerViewModel.Ihi = PatientDetailsResponse.ApiPatient.Ihi;
+          Presenter.PatientBanerViewModel.IndigenousStatus = PatientDetailsResponse.ApiPatient.IndigenousStatusDescription;
+          //Not that RelationshipDescription and RelationshipType is not returned by GetPatient only by GetRecordLisy
+          if (PatientDetailsResponse.Format == FhirApi.FhirFormat.Xml)
+          {
+            Presenter.TextEditorViewModel.FormatType = Extensions.AvalonEditSyntaxTypes.Xml;
+          }
+          else if (PatientDetailsResponse.Format == FhirApi.FhirFormat.Json)
+          {
+            Presenter.TextEditorViewModel.FormatType = Extensions.AvalonEditSyntaxTypes.Json;
+          }
+          else
+          {
+            Presenter.TextEditorViewModel.FormatType = Extensions.AvalonEditSyntaxTypes.None;
+          }
+          Presenter.TextEditorViewModel.Text = PatientDetailsResponse.Body;
+          //PatientDetailsResponse.ApiPatient.RelationshipDescription;
+          return true;
+        }
+        else
+        {
+          if (PatientDetailsResponse.ErrorResponse != null)
+            Presenter.PatientBanerViewModel.Family = PatientDetailsResponse.ErrorResponse.Description;
+          else
+            Presenter.PatientBanerViewModel.Family = $"Unknown error, HTTPStatus: {PatientDetailsResponse.StatusCode.ToString()}";
+          return true;
+        }
+      }
+      catch (Exception Exec)
+      {
+        throw new Exception("GetPatientDetails failed.", Exec);
+      }
     }
 
     public bool GetRecordList(ViewModel.UserAccountView UserAccountView, ViewModel.Presenter Presenter)
@@ -174,7 +229,19 @@ namespace MyHRMobile.FhirGatewayTool
       RecordListResponse RecordListResponse = FhirApi.GetRecordList();
       if (RecordListResponse.StatusCode == System.Net.HttpStatusCode.OK)
       {
-        Presenter.TextEditorRight = RecordListResponse.Body;
+        if (RecordListResponse.Format == FhirApi.FhirFormat.Xml)
+        {
+          Presenter.TextEditorViewModel.FormatType = Extensions.AvalonEditSyntaxTypes.Xml;
+        }
+        else if (RecordListResponse.Format == FhirApi.FhirFormat.Json)
+        {
+          Presenter.TextEditorViewModel.FormatType = Extensions.AvalonEditSyntaxTypes.Json;
+        }
+        else
+        {
+          Presenter.TextEditorViewModel.FormatType = Extensions.AvalonEditSyntaxTypes.None;
+        }
+        Presenter.TextEditorViewModel.Text = RecordListResponse.Body;
         Presenter.CurrentUserAccount.UserAccountRecordList = new System.Collections.ObjectModel.ObservableCollection<ViewModel.UserAccountRecord>();
         foreach (var Person in RecordListResponse.ApiRelatedPersonList)
         {
@@ -182,6 +249,7 @@ namespace MyHRMobile.FhirGatewayTool
           RecordItem.Family = Person.Family;
           RecordItem.Given = Person.Given;
           RecordItem.Ihi = Person.Ihi;
+          RecordItem.RelationshipTypeDescription = Person.RelationshipDescription;
           Presenter.CurrentUserAccount.UserAccountRecordList.Add(RecordItem);
         }
         if (Presenter.CurrentUserAccount != null && Presenter.CurrentUserAccount.UserAccountRecordList != null && Presenter.CurrentUserAccount.UserAccountRecordList.Count > 0)
@@ -194,12 +262,14 @@ namespace MyHRMobile.FhirGatewayTool
       {
         if (RecordListResponse.ErrorResponse != null)
         {
-          Presenter.TextEditorRight = RecordListResponse.ErrorResponse.Description;
+          Presenter.TextEditorViewModel.FormatType = Extensions.AvalonEditSyntaxTypes.None;
+          Presenter.TextEditorViewModel.Text = RecordListResponse.ErrorResponse.Description;
           return false;
         }
         else
         {
-          Presenter.TextEditorRight = $"Unknown Error, Status code {RecordListResponse.StatusCode.ToString()}";
+          Presenter.TextEditorViewModel.FormatType = Extensions.AvalonEditSyntaxTypes.None;
+          Presenter.TextEditorViewModel.Text = $"Unknown Error, Status code {RecordListResponse.StatusCode.ToString()}";
           return false;
         }
       }

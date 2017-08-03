@@ -12,7 +12,7 @@ using Hl7.FhirPath;
 using Hl7.Fhir.ElementModel;
 using Hl7.FhirPath.Functions;
 using Hl7.Fhir.Model;
-
+using Hl7.Fhir.Support;
 
 namespace MyHRMobile.ApiV1_0_0_hotfix.ApiSupport
 {
@@ -62,10 +62,12 @@ namespace MyHRMobile.ApiV1_0_0_hotfix.ApiSupport
     public string FhirId { get; set; }
     public string Ihi { get; set; }
     public ApiEnum.RelationshipType RelationshipType { get; set; }
+    public string RelationshipDescription { get; set; }
     public string Family { get; set; }
     public string Given { get; set; }
     public AdministrativeGender Gender { get; set; }
-    public FhirDateTime Dob { get; set; }
+    public string Sex { get; set; }
+    public DateTime? Dob { get; set; }
     public ApiRelatedPerson() { }
     public ApiRelatedPerson(IElementNavigator RelatedPerson)
     {
@@ -94,13 +96,14 @@ namespace MyHRMobile.ApiV1_0_0_hotfix.ApiSupport
       }
       if (RelatedPerson.Select("birthDate").IsAny())
       {
-        this.Dob = new FhirDateTime(RelatedPerson.Select("birthDate").First().Value.ToString());
+        FhirDateTime FhirDate = new FhirDateTime(RelatedPerson.Select("birthDate").First().Value.ToString());
+        this.Dob = FhirDate.ToDateTime();
       }
 
       if (RelatedPerson.Select("birthDate").IsAny())
       {
-        string gen = RelatedPerson.Select("gender").First().Value.ToString().ToLower();
-        switch (gen)
+        this.Sex = RelatedPerson.Select("gender").First().Value.ToString().ToLower();
+        switch (this.Sex)
         {
           case "female":
             this.Gender = AdministrativeGender.Female;
@@ -126,27 +129,35 @@ namespace MyHRMobile.ApiV1_0_0_hotfix.ApiSupport
         {
           case "RT001":
             this.RelationshipType = ApiEnum.RelationshipType.Self;
+            this.RelationshipDescription = "Self";
             break;
           case "RT002":
             this.RelationshipType = ApiEnum.RelationshipType.Under18ParentalResponsibility;
+            this.RelationshipDescription = "Under 18 - Parental Responsibility";
             break;
           case "RT003":
             this.RelationshipType = ApiEnum.RelationshipType.Under18LegalAuthority;
+            this.RelationshipDescription = "Under 18 - Legal Authority";
             break;
           case "RT004":
             this.RelationshipType = ApiEnum.RelationshipType.UnderAge18OtherwiseAppropriatePerson;
+            this.RelationshipDescription = "Under 18 - Otherwise Appropriate Person";
             break;
           case "RT005":
             this.RelationshipType = ApiEnum.RelationshipType.Under18LegalAuthority;
+            this.RelationshipDescription = "18 and Over - Legal Authority";
             break;
           case "RT006":
             this.RelationshipType = ApiEnum.RelationshipType.Age18andOverOtherwiseAppropriatePerson;
+            this.RelationshipDescription = "18 and Over - Otherwise Appropriate Person";
             break;
           case "RT007":
             this.RelationshipType = ApiEnum.RelationshipType.FullAccessNominatedRepresentative;
+            this.RelationshipDescription = "Full Access Nominated Representative";
             break;
           case "RT008":
             this.RelationshipType = ApiEnum.RelationshipType.NominatedRepresentative;
+            this.RelationshipDescription = "Nominated Representative";
             break;
           default:
             throw new FormatException($"Unknown ApiRelatedPerson.RelationshipType of {this.RelationshipType.ToString()}");

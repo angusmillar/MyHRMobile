@@ -4,6 +4,8 @@ using System.Text;
 using MyHRMobile.Rest;
 using System.Net.Http;
 using MyHRMobile.ApiV1_0_0_hotfix.ApiSupport;
+using Hl7.Fhir.Model;
+using Hl7.Fhir.Support;
 
 namespace MyHRMobile.ApiV1_0_0_hotfix
 {
@@ -94,5 +96,33 @@ namespace MyHRMobile.ApiV1_0_0_hotfix
       HttpResponseMessage response = _Client.Get(GetRecordListQuery, this.ApiRequestHeader.Authorization, this.ApiRequestHeader.AppId, this.ApiRequestHeader.AppVersion).Result;
       return new PatientDetailsResponse(response.StatusCode, response.Content.ReadAsStringAsync().Result, Format);
     }
+
+    public PbsItemsResponse GetPbsItems(string Ihi, DateTime? CreatedFrom, DateTime? CreatedTo)
+    {
+      if (ApiRequestHeader == null)
+        throw new NullReferenceException("ApiRequestHeader can not be null");
+
+      string GetRecordListQuery = "fhir/v1.0.0/ExplanationOfBenefit";
+      string RangeQuery = string.Empty;
+      if (CreatedFrom.HasValue)
+      {
+        var DateFrom = new FhirDateTime(CreatedFrom.Value);
+        RangeQuery = $"&created=ge{DateFrom.Value}";
+      }
+      if (CreatedTo.HasValue)
+      {
+        var DateTo = new FhirDateTime(CreatedTo.Value);
+        RangeQuery += $"&created=le{DateTo.Value}";
+      }
+
+      GetRecordListQuery = $"{GetRecordListQuery}?patient.identifier={Ihi}{RangeQuery}&coverage.plan=PBS&_format={GetFormatString(Format)}";
+
+      _Client = new Client();
+      _Client.Endpoint = ServiceEndpoint.OriginalString;
+      HttpResponseMessage response = _Client.Get(GetRecordListQuery, this.ApiRequestHeader.Authorization, this.ApiRequestHeader.AppId, this.ApiRequestHeader.AppVersion).Result;
+      return new PbsItemsResponse(response.StatusCode, response.Content.ReadAsStringAsync().Result, Format);
+    }
+
+
   }
 }

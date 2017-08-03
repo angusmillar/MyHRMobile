@@ -61,6 +61,7 @@
     <Compile Include="ApiSupport\ApiResponseBase.cs" />
     <Compile Include="ApiSupport\ErrorResponse.cs" />
     <Compile Include="ApiSupport\PatientDetailsResponse.cs" />
+    <Compile Include="ApiSupport\PbsItemsResponse.cs" />
     <Compile Include="ApiSupport\RecordListResponse.cs" />
     <Compile Include="ApiSupport\RefreshTokenRequest.cs" />
     <Compile Include="ApiSupport\TokenRequestBase.cs" />

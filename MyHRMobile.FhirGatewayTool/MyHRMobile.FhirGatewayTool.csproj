@@ -66,9 +66,11 @@
     <Compile Include="Extensions\ExtentionAvalonEdit.cs" />
     <Compile Include="CustomControl\GridControl .cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="ViewModel\PatientBanerViewModel.cs" />
     <Compile Include="ViewModel\AddUserAccountViewModel.cs" />
     <Compile Include="ViewModel\MyGovAuthenticationOutcomeViewModel.cs" />
     <Compile Include="ViewModel\MyGovBrowserViewModel.cs" />
+    <Compile Include="ViewModel\TextEditorViewModel.cs" />
     <Compile Include="Views\AddUserAccountView.xaml.cs">
       <DependentUpon>AddUserAccountView.xaml</DependentUpon>
     </Compile>
@@ -77,6 +79,9 @@
     </Compile>
     <Compile Include="Views\MyGovBrowserView.xaml.cs">
       <DependentUpon>MyGovBrowserView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PatientBannerView.xaml.cs">
+      <DependentUpon>PatientBannerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TextEditorView.xaml.cs">
       <DependentUpon>TextEditorView.xaml</DependentUpon>
@@ -107,6 +112,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MyGovBrowserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PatientBannerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

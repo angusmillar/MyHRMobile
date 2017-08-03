@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using MyHRMobile.FhirGatewayTool.Extensions;
 using MyHRMobile.FhirGatewayTool.Views;
 using MyHRMobile.FhirGatewayTool.CustomControl;
+using MyHRMobile.Common.Utility;
 using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows;
@@ -146,6 +147,31 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
       }
     }
 
+    private TextEditorViewModel _TextEditorViewModel;
+    public TextEditorViewModel TextEditorViewModel
+    {
+      get
+      {
+        return _TextEditorViewModel;
+      }
+      set
+      {
+        _TextEditorViewModel = value;
+      }
+    }
+
+    private PatientBanerViewModel _PatientBanerViewModel;
+    public PatientBanerViewModel PatientBanerViewModel
+    {
+      get
+      {
+        return _PatientBanerViewModel;
+      }
+      set
+      {
+        _PatientBanerViewModel = value;
+      }
+    }
 
     private List<UIElement> RightPanleStateList;
     private UiService _UiService;
@@ -164,8 +190,6 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
       }
     }
     public GridControl MainGrid;
-    private ICSharpCode.AvalonEdit.Folding.FoldingManager FoldingManager;
-    private ICSharpCode.AvalonEdit.Folding.XmlFoldingStrategy FoldingStrategy;
 
     public Presenter()
     {
@@ -359,37 +383,46 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
       if (obj != null && obj is UserAccountRecord UserAccountRecord)
       {
         this._CurrentUserAccount.SelectedUserAccountRecord = UserAccountRecord;
-        UiService.GetPatientDetails(this);
+        this.TextEditorViewModel = new TextEditorViewModel();
+        if (UiService.GetPatientDetails(this))
+        {
+          PatientBannerView PatientBannerView = new PatientBannerView(this);
+
+          DisplayTextEditorView TextEditorView = new DisplayTextEditorView(this);
+
+          Grid OuterGrid = new Grid();
+          RowDefinition GridRow1 = new RowDefinition();
+          GridRow1.Height = new GridLength(0, GridUnitType.Auto);
+
+          RowDefinition GridRow2 = new RowDefinition();
+          GridRow2.Height = new GridLength(1, GridUnitType.Star);
+
+
+          OuterGrid.RowDefinitions.Add(GridRow1);
+          OuterGrid.RowDefinitions.Add(GridRow2);
+
+          Grid.SetColumn(PatientBannerView, 0);
+          Grid.SetRow(PatientBannerView, 0);
+
+          Grid.SetColumn(TextEditorView, 0);
+          Grid.SetRow(TextEditorView, 1);
+
+          OuterGrid.Children.Add(PatientBannerView);
+          OuterGrid.Children.Add(TextEditorView);
+
+          Grid.SetColumn(OuterGrid, 1);
+          Grid.SetRow(OuterGrid, 0);
+          RightPanelAdd(OuterGrid);
+
+        }
       }
     }
 
     public void LoadRecordList(object obj)
     {
-      DisplayTextEditorView TextEditorView = new DisplayTextEditorView();
-      TextEditorView.TextEditorBody.SetSyntaxType(AvalonEditSyntaxTypes.Xml);
-
-      //AvalonEdit Folding
-      FoldingManager = ICSharpCode.AvalonEdit.Folding.FoldingManager.Install(TextEditorView.TextEditorBody.TextArea);
-      FoldingStrategy = new ICSharpCode.AvalonEdit.Folding.XmlFoldingStrategy();
-      FoldingStrategy = new ICSharpCode.AvalonEdit.Folding.XmlFoldingStrategy();
-
-      TextEditorView.TextEditorBody.WordWrap = false;
-      TextEditorView.TextEditorBody.ShowLineNumbers = true;
-      TextEditorView.TextEditorBody.FontFamily = new FontFamily("Consolas");
-      TextEditorView.TextEditorBody.FontSize = 12;
-      TextEditorView.TextEditorBody.LineNumbersForeground = Brushes.DarkGray;
-      ExtentionAvalonEdit.AvalonEditContextMenu(TextEditorView.TextEditorBody);
-
-      if (UiService.GetRecordList(this.CurrentUserAccount, this))
-      {
-
-        TextEditorView.TextEditorBody.Text = MyHRMobile.Common.Utility.XmlTool.BeautifyXML(this.TextEditorRight);
-        FoldingStrategy.UpdateFoldings(FoldingManager, TextEditorView.TextEditorBody.Document);
-      }
-      else
-      {
-        TextEditorView.TextEditorBody.Text = this.TextEditorRight;
-      }
+      this.TextEditorViewModel = new TextEditorViewModel();
+      UiService.GetRecordList(this.CurrentUserAccount, this);
+      DisplayTextEditorView TextEditorView = new DisplayTextEditorView(this);
 
       Grid.SetColumn(TextEditorView, 1);
       Grid.SetRow(TextEditorView, 0);
@@ -455,20 +488,6 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
       }
     }
 
-    private string _TextEditorRight { get; set; }
-    public string TextEditorRight
-    {
-      get
-      {
-        return _TextEditorRight;
-      }
-      set
-      {
-        _TextEditorRight = value;
-        NotifyPropertyChanged("TextEditorRight");
-      }
-    }
-
     private UserAccountView _CurrentUserAccount { get; set; }
     public UserAccountView CurrentUserAccount
     {
@@ -529,7 +548,6 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
       RightPanleStateList.ForEach(x => MainGrid.Children.Remove(x));
     }
 
-
   }
 
   public class UserAccountView : ViewModelBase, INotifyPropertyChanged
@@ -585,7 +603,6 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
       }
     }
 
-
     public override string ToString()
     {
       return Username;
@@ -605,19 +622,13 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
     {
       get
       {
-        if (this.Ihi.Length == 16)
-        {
-          return $"{this.Ihi.Substring(0, 4)} {this.Ihi.Substring(4, 4)} {this.Ihi.Substring(8, 4)} {this.Ihi.Substring(12, 4)} ";
-        }
-        else
-        {
-          return $"{this.Ihi}";
-        }
+        return StringTools.FormatedIHI(this.Ihi);
       }
     }
 
     public string Family { get; set; }
     public string Given { get; set; }
     public string Ihi { get; set; }
+    public string RelationshipTypeDescription { get; set; }
   }
 }

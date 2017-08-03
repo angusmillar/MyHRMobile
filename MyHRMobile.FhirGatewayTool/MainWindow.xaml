@@ -118,12 +118,15 @@
                           <RowDefinition/>
                           <RowDefinition/>
                           <RowDefinition/>
+                          <RowDefinition/>
                         </Grid.RowDefinitions>
                         <TextBlock Text="Name: " FontWeight="DemiBold" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0"/>
                         <TextBlock Text="{Binding Path=FormatedName}" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" />
                         <TextBlock Text="IHI: " FontWeight="DemiBold" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0"/>
                         <TextBlock Text="{Binding Path=FormatedIHI}" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" />
-                        <TextBlock Text="___________________________________________________________________________________________________________________" FontSize="5" Foreground="LightGray" Grid.Row="2" Grid.ColumnSpan="2" />
+                        <TextBlock Text="Rel Type: " FontWeight="DemiBold" FontSize="10" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="0"/>
+                        <TextBlock Text="{Binding Path=RelationshipTypeDescription}" FontSize="10" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1" />
+                        <TextBlock Text="___________________________________________________________________________________________________________________" FontSize="5" Foreground="LightGray" Grid.Row="3" Grid.ColumnSpan="2" />
                       </Grid>
                     </CustomControl:GridControl>
                   </DataTemplate>
