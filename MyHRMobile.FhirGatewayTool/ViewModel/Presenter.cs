@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Input;
+using System.Net;
 
 namespace MyHRMobile.FhirGatewayTool.ViewModel
 {
@@ -173,6 +174,20 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
       }
     }
 
+    private ApiCallViewModel _ApiCallViewModel;
+    public ApiCallViewModel ApiCallViewModel
+    {
+      get
+      {
+        return _ApiCallViewModel;
+      }
+      set
+      {
+        _ApiCallViewModel = value;
+      }
+    }
+
+
     private List<UIElement> RightPanleStateList;
     private UiService _UiService;
     public UiService UiService
@@ -193,6 +208,8 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
 
     public Presenter()
     {
+      _ApiCallViewModel = new ApiCallViewModel();
+
       LoadRecordListCommand = new RelayCommand(LoadRecordList, param => this._CanExecute);
       SelectedRecordCommand = new RelayCommand(LoadSelectedRecord, param => this._CanExecute);
       AddAccountCommand = new RelayCommand(PresentAddUserAccount, param => this._CanExecute);
@@ -388,26 +405,37 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
         {
           PatientBannerView PatientBannerView = new PatientBannerView(this);
 
+          ApiCallView ApiCallView = new ApiCallView(this);
+
           DisplayTextEditorView TextEditorView = new DisplayTextEditorView(this);
+
 
           Grid OuterGrid = new Grid();
           RowDefinition GridRow1 = new RowDefinition();
           GridRow1.Height = new GridLength(0, GridUnitType.Auto);
 
           RowDefinition GridRow2 = new RowDefinition();
-          GridRow2.Height = new GridLength(1, GridUnitType.Star);
+          GridRow2.Height = new GridLength(45);
+
+          RowDefinition GridRow3 = new RowDefinition();
+          GridRow3.Height = new GridLength(1, GridUnitType.Star);
 
 
           OuterGrid.RowDefinitions.Add(GridRow1);
           OuterGrid.RowDefinitions.Add(GridRow2);
+          OuterGrid.RowDefinitions.Add(GridRow3);
 
           Grid.SetColumn(PatientBannerView, 0);
           Grid.SetRow(PatientBannerView, 0);
 
+          Grid.SetColumn(ApiCallView, 0);
+          Grid.SetRow(ApiCallView, 1);
+
           Grid.SetColumn(TextEditorView, 0);
-          Grid.SetRow(TextEditorView, 1);
+          Grid.SetRow(TextEditorView, 2);
 
           OuterGrid.Children.Add(PatientBannerView);
+          OuterGrid.Children.Add(ApiCallView);
           OuterGrid.Children.Add(TextEditorView);
 
           Grid.SetColumn(OuterGrid, 1);
@@ -500,8 +528,15 @@ namespace MyHRMobile.FhirGatewayTool.ViewModel
         _CurrentUserAccount = value;
         if (_CurrentUserAccount != null)
         {
-          UiService.GetRefeashToken(_CurrentUserAccount);
-          LoadRecordList(null);
+          try
+          {
+            UiService.GetRefeashToken(_CurrentUserAccount);
+            LoadRecordList(null);
+          }
+          catch (Exception Exec)
+          {
+            MessageBox.Show($"No internet connectivity. Error: {Exec.Message}", "No internet", MessageBoxButton.OK);
+          }
         }
         NotifyPropertyChanged("CurrentUserAccount");
       }

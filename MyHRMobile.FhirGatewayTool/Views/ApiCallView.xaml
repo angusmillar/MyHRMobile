@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="MyHRMobile.FhirGatewayTool.Views.ApiCallView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MyHRMobile.FhirGatewayTool.Views"
+             xmlns:CustomControl="clr-namespace:MyHRMobile.FhirGatewayTool.CustomControl"
+             xmlns:ViewModel="clr-namespace:MyHRMobile.FhirGatewayTool.ViewModel"       
+
+             mc:Ignorable="d" 
+             d:DesignHeight="45" d:DesignWidth="600"
+             Background="White">
+
+  <UserControl.DataContext>
+    <ViewModel:Presenter/>
+  </UserControl.DataContext>
+
+  <CustomControl:GridControl       
+      Background="White"
+      ShowCustomGridLines="False" 
+      GridLineBrush="DarkGreen"  
+      GridLineThickness="3" 
+      Margin="0">
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <GroupBox Grid.Column="0" Grid.Row="0" Header="Select Call">
+      <ComboBox Name="ComboBoxAccount" Width="150" 
+                      ItemsSource="{Binding ApiCallViewModel.ApiCallList}" 
+                      SelectedValue="{Binding ApiCallViewModel.SelectedApiCall, Mode=TwoWay}">
+      </ComboBox>
+
+    </GroupBox>
+
+    <StackPanel Grid.Column="1" Grid.Row="0" DataContext="{Binding ApiCallViewModel.SelectedApiCall.CallDisplayElement}" ></StackPanel>
+
+  </CustomControl:GridControl>
+
+</UserControl>

@@ -63,16 +63,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ApiCall\IApiCall.cs" />
+    <Compile Include="ApiCall\PbsApiCall.cs" />
     <Compile Include="Extensions\ExtentionAvalonEdit.cs" />
     <Compile Include="CustomControl\GridControl .cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="ViewModel\ApiCallViewModel.cs" />
     <Compile Include="ViewModel\PatientBanerViewModel.cs" />
     <Compile Include="ViewModel\AddUserAccountViewModel.cs" />
     <Compile Include="ViewModel\MyGovAuthenticationOutcomeViewModel.cs" />
     <Compile Include="ViewModel\MyGovBrowserViewModel.cs" />
+    <Compile Include="ViewModel\PbsCallViewModel.cs" />
     <Compile Include="ViewModel\TextEditorViewModel.cs" />
     <Compile Include="Views\AddUserAccountView.xaml.cs">
       <DependentUpon>AddUserAccountView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ApiCallView.xaml.cs">
+      <DependentUpon>ApiCallView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MyGovAuthenticationOutcomeView.xaml.cs">
       <DependentUpon>MyGovAuthenticationOutcomeView.xaml</DependentUpon>
@@ -82,6 +89,9 @@
     </Compile>
     <Compile Include="Views\PatientBannerView.xaml.cs">
       <DependentUpon>PatientBannerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PbsCallView.xaml.cs">
+      <DependentUpon>PbsCallView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TextEditorView.xaml.cs">
       <DependentUpon>TextEditorView.xaml</DependentUpon>
@@ -107,6 +117,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ApiCallView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MyGovAuthenticationOutcomeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -116,6 +130,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PatientBannerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PbsCallView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
